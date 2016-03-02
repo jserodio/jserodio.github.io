@@ -1,4 +1,4 @@
-var map; // variable global
+var map = null; // variable global
 var watchId = null;
 
 window.onload = obtenerLocalizacion;
@@ -11,13 +11,10 @@ function obtenerLocalizacion() {
         botonStart.onclick = function(){
             navigator.geolocation.getCurrentPosition( mostrarLocalizacion , mostrarError );
         }
-
         var botonWatch = document.getElementById("watch");
         botonWatch.onclick = iniciarMonitorizacion;
-
         var botonClear = document.getElementById("clearWatch");
         botonClear.onclick = detenerMonitorizacion;
-
 	}
 	else {
 		alert("Este navegador no soporta Geolocation API");
@@ -27,7 +24,6 @@ function obtenerLocalizacion() {
 function mostrarLocalizacion(posicion) {
 	var latitud = posicion.coords.latitude;
 	var longitud = posicion.coords.longitude;
-
 	var div = document.getElementById("localizacion");
 	div.innerHTML = "Latitud de tu posición: " + latitud + ", Longitud: " + longitud;
     div.innerHTML += "<br> (con una precisión de " + posicion.coords.accuracy + " metros)";
@@ -37,7 +33,6 @@ function mostrarLocalizacion(posicion) {
     } else {
         centrarMapa(posicion.coords);
     }
-
 }
 
 function mostrarError(error) {
@@ -55,22 +50,16 @@ function mostrarError(error) {
 	div.innerHTML = errorMessage;
 }
 
-
-
-
-
 function showMap(coords) {
-
 	var googleLatAndLong = new google.maps.LatLng(coords.latitude,coords.longitude);
-
 	var mapOptions = {
 		zoom: 10,
 		center: googleLatAndLong,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
-
 	var mapDiv = document.getElementById("mapa");
-	map = new google.maps.Map(mapDiv, mapOptions);
+
+    map = new google.maps.Map(mapDiv, mapOptions);
 
     // Añadir marcador
 	var titulo = "Tu geoposición";
@@ -83,7 +72,6 @@ function showMap(coords) {
     }
 
 	addMarker(map, googleLatAndLong, titulo, contenido);
-
 }
 
 function addMarker(mapa, latlong, titulo, contenido) {
