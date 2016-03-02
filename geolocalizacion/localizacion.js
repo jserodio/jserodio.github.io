@@ -144,8 +144,8 @@ function iniciarMonitorizacion() {
 }
 
 function detenerMonitorizacion() {
-    if (watchId) {
-        navigator.geolocation.clearWatch(watchId);
-        watchId = null;
-    }
+    console.log("detenerMonitorizacion");
+    console.log("Valor wachId: " + watchId);
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
 }
