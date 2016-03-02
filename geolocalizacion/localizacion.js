@@ -1,6 +1,7 @@
 //window.onload = obtenerLocalizacion;
 
 
+
 function obtenerLocalizacion() {
 	if (navigator.geolocation) {
 
@@ -88,6 +89,16 @@ function addMarker(mapa, latlong, titulo, contenido) {
 		infoWindow.open(mapa);
 	});
 }
+
+// Eventos click
+
+document.getElementById("watch").addListener("click", function(){
+    iniciarMonitorizacion();
+});
+
+document.getElementById("clearWatch").addListener("click", function(){
+    detenerMonitorizacion();
+});
 
 var watchId = null;
 
