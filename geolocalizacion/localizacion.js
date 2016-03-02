@@ -30,6 +30,7 @@ function mostrarLocalizacion(posicion) {
 
 	var div = document.getElementById("localizacion");
 	div.innerHTML = "Latitud de tu posición: " + latitud + ", Longitud: " + longitud;
+    div.innerHTML += "<br> (con una precisión de " + posicion.coords.accuracy + " metros)";
 
     if (map === null){
         showMap(posicion.coords);
@@ -71,14 +72,15 @@ function showMap(coords) {
 	var mapDiv = document.getElementById("mapa");
 	map = new google.maps.Map(mapDiv, mapOptions);
 
+    // Añadir marcador
 	var titulo = "Tu geoposición";
 	var contenido;
 
-  if (coords.altitude === 0) {
-
-  } else {
-      contenido= "Latitud: " + coords.latitude + "<br>Longitud: " + coords.longitude + "<br>Altitud: "+ coords.altitude;
-  }
+    if (coords.altitude === 0 || coords.altitude === null) {
+        tryElevation = true;
+    } else {
+        contenido= "<br>Altitud sin elevación: "+ coords.altitude;
+    }
 
 	addMarker(map, googleLatAndLong, titulo, contenido);
 
@@ -102,8 +104,33 @@ function addMarker(mapa, latlong, titulo, contenido) {
 	var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
 
 	google.maps.event.addListener(marker, "click", function() {
+        if (tryElevation) {
+    	    var elevator = new google.maps.ElevationService;
+  		    displayLocationElevation(latlong, elevator, infoWindow);
+        }
 		infoWindow.open(mapa);
 	});
+}
+
+function displayLocationElevation(location, elevator, infowindow) {
+        // Initiate the location request
+        elevator.getElevationForLocations({
+          'locations': [location]
+        }, function(results, status) {
+          infowindow.setPosition(location);
+          if (status === google.maps.ElevationStatus.OK) {
+            // Retrieve the first result
+            if (results[0]) {
+              // Open the infowindow indicating the elevation at the clicked position.
+              infowindow.setContent('La altitud en este punto es: ' +
+                  results[0].elevation.toFixed(2) + ' metros.');
+            } else {
+              infowindow.setContent('No results found');
+            }
+          } else {
+            infowindow.setContent('Elevation service failed due to: ' + status);
+          }
+        });
 }
 
 function centrarMapa(coords){
