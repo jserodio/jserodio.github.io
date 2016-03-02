@@ -1,4 +1,5 @@
-window.onload = obtenerLocalizacion;
+//window.onload = obtenerLocalizacion;
+
 
 function obtenerLocalizacion() {
 	if (navigator.geolocation) {
@@ -59,15 +60,14 @@ function showMap(coords) {
   if (coords.altitude === 0) {
 
   } else {
-  	contenido= "Latitud: " + coords.latitude + "<br>Longitud: " + coords.longitude + "<br>Altitud: "+ coords.altitude;
+      contenido= "Latitud: " + coords.latitude + "<br>Longitud: " + coords.longitude + "<br>Altitud: "+ coords.altitude;
   }
 
 	addMarker(map, googleLatAndLong, titulo, contenido);
 
 }
 
-function addMarker(mapa, latlong, titulo, contenido)
-{
+function addMarker(mapa, latlong, titulo, contenido) {
 	var markerOptions = {
 		position: latlong,
 		map: mapa,
@@ -87,4 +87,17 @@ function addMarker(mapa, latlong, titulo, contenido)
 	google.maps.event.addListener(marker, "click", function() {
 		infoWindow.open(mapa);
 	});
+}
+
+var watchId = null;
+
+function iniciarMonitorizacion() {
+    watchId = navigator.geolocation.watchPosition(mostrarLocalizacion.mostrarError);
+}
+
+function detenerMonitorizacion() {
+    if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
 }
