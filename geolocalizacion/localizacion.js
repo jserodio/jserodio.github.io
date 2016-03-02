@@ -138,14 +138,12 @@ function iniciarMonitorizacion() {
     var opciones = {
         enableHighAccuracy: true,
         timeout: Infinity,
-        maximumAge: 2000
+        maximumAge: 500
     }
     watchId = navigator.geolocation.watchPosition(mostrarLocalizacion, mostrarError, opciones);
 }
 
 function detenerMonitorizacion() {
-    console.log("detenerMonitorizacion");
-    console.log("Valor wachId: " + watchId);
     navigator.geolocation.clearWatch(watchId);
     watchId = null;
 }
