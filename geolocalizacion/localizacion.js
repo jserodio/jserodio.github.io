@@ -1,3 +1,6 @@
+var map; // variable global
+var watchId = null;
+
 window.onload = obtenerLocalizacion;
 
 function obtenerLocalizacion() {
@@ -53,7 +56,7 @@ function mostrarError(error) {
 
 
 
-var map; // variable global
+
 
 function showMap(coords) {
 
@@ -114,10 +117,6 @@ function centrarMapa(coords){
     addMarker(map, latlong, "Tu nueva localizacion", "Te has movido a: " +
     latitud + "," + longitud);
 }
-
-
-
-var watchId = null;
 
 function iniciarMonitorizacion() {
     var opciones = {
