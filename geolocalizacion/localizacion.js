@@ -64,6 +64,7 @@ function showMap(coords) {
     // Añadir marcador
 	var titulo = "Tu geoposición";
 	var contenido;
+    tryElevation=false;
 
     if (coords.altitude === 0 || coords.altitude === null) {
         tryElevation = true;
