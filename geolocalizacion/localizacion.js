@@ -1,11 +1,24 @@
-//window.onload = obtenerLocalizacion;
+window.onload = obtenerLocalizacion;
 
-
+document.getElementById("clearWatch").addListener("click", function(){
+    detenerMonitorizacion();
+});
 
 function obtenerLocalizacion() {
-	if (navigator.geolocation) {
 
-		navigator.geolocation.getCurrentPosition( mostrarLocalizacion , mostrarError );
+	if (navigator.geolocation) {
+        // Eventos click
+        var botonStart = document.getElementById("start");
+        botonStart.onclick = function(){
+            navigator.geolocation.getCurrentPosition( mostrarLocalizacion , mostrarError );
+        }
+
+        var botonWatch = document.getElementById("watch");
+        botonWatch.onclick = iniciarMonitorizacion;
+
+        var botonClear = document.getElementById("clearWatch");
+        botonClear.onclick = detenerMonitorizacion;
+
 	}
 	else {
 		alert("Este navegador no soporta Geolocation API");
@@ -19,7 +32,11 @@ function mostrarLocalizacion(posicion) {
 	var div = document.getElementById("localizacion");
 	div.innerHTML = "Latitud de tu posición: " + latitud + ", Longitud: " + longitud;
 
-	showMap(posicion.coords);
+    if (map === null){
+        showMap(posicion.coords);
+    } else {
+        centrarMapa(posicion.coords);
+    }
 
 }
 
@@ -90,24 +107,29 @@ function addMarker(mapa, latlong, titulo, contenido) {
 	});
 }
 
-// Eventos click
+function centrarMapa(coords){
+    var latitud = coords.latitude;
+    var longitud = coords.longitude;
+    var latlong = new google.maps.LatLng(latitud, longitud);
 
-document.getElementById("start").addListener("click", function(){
-    obtenerLocalizacion();
-});
+    // Centrar el mapa en la posicion que le pasamos como parámetro
+    map.panTo(latlong);
 
-document.getElementById("watch").addListener("click", function(){
-    iniciarMonitorizacion();
-});
+    addMarker(map, latlong, "Tu nueva localizacion", "Te has movido a: " +
+    latitud + "," + longitud);
+}
 
-document.getElementById("clearWatch").addListener("click", function(){
-    detenerMonitorizacion();
-});
+
 
 var watchId = null;
 
 function iniciarMonitorizacion() {
-    watchId = navigator.geolocation.watchPosition(mostrarLocalizacion.mostrarError);
+    var opciones = {
+        enableHighAccuracy: true,
+        timeout: Infinity,
+        maximumAge: 2000
+    }
+    watchId = navigator.geolocation.watchPosition(mostrarLocalizacion, mostrarError, opciones);
 }
 
 function detenerMonitorizacion() {
