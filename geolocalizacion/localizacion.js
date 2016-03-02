@@ -1,9 +1,5 @@
 window.onload = obtenerLocalizacion;
 
-document.getElementById("clearWatch").addListener("click", function(){
-    detenerMonitorizacion();
-});
-
 function obtenerLocalizacion() {
 
 	if (navigator.geolocation) {
