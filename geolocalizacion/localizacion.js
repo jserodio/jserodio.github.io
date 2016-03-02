@@ -92,6 +92,10 @@ function addMarker(mapa, latlong, titulo, contenido) {
 
 // Eventos click
 
+document.getElementById("start").addListener("click", function(){
+    obtenerLocalizacion();
+});
+
 document.getElementById("watch").addListener("click", function(){
     iniciarMonitorizacion();
 });
