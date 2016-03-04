@@ -7,10 +7,7 @@ function obtenerLocalizacion() {
 
 	if (navigator.geolocation) {
         // Eventos click
-        var botonStart = document.getElementById("start");
-        botonStart.onclick = function(){
-            navigator.geolocation.getCurrentPosition( mostrarLocalizacion , mostrarError );
-        }
+        navigator.geolocation.getCurrentPosition( mostrarLocalizacion , mostrarError );
         var botonWatch = document.getElementById("watch");
         botonWatch.onclick = iniciarMonitorizacion;
         var botonClear = document.getElementById("clearWatch");
