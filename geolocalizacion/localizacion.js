@@ -134,8 +134,8 @@ function centrarMapa(coords){
 function iniciarMonitorizacion() {
     var opciones = {
         enableHighAccuracy: true,
-        timeout: Infinity,
-        maximumAge: 500
+        timeout: 1000,
+        maximumAge: 1000
     }
     watchId = navigator.geolocation.watchPosition(mostrarLocalizacion, mostrarError, opciones);
 }
