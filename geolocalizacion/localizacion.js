@@ -25,7 +25,7 @@ function mostrarLocalizacion(posicion) {
 	var latitud = posicion.coords.latitude;
 	var longitud = posicion.coords.longitude;
 	var div = document.getElementById("localizacion");
-	div.innerHTML = "Latitud de tu posición: " + latitud + ", Longitud: " + longitud;
+	div.innerHTML = "Latitud de tu posición: " + latitud.ToFixed(2) + ", Longitud: " + longitud.ToFixed(2);
     div.innerHTML += "<br> (con una precisión de " + posicion.coords.accuracy + " metros)";
 
     if (map === null){
@@ -64,12 +64,12 @@ function showMap(coords) {
     // Añadir marcador
 	var titulo = "Tu geoposición";
 	var contenido;
-    tryElevation=false;
 
     if (coords.altitude === 0 || coords.altitude === null) {
         tryElevation = true;
     } else {
-        contenido= "<br>Altitud sin elevación: "+ coords.altitude;
+        tryElevation = false;
+        contenido= "<br>Altitud sin elevación: " + coords.altitude.ToFixed(2);
     }
 
 	addMarker(map, googleLatAndLong, titulo, contenido);
