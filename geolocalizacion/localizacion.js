@@ -26,7 +26,7 @@ function mostrarLocalizacion(posicion) {
 	var longitud = posicion.coords.longitude;
 	var div = document.getElementById("localizacion");
 	div.innerHTML = "Latitud de tu posición: " + latitud.toFixed(2) + ", Longitud: " + longitud.toFixed(2);
-    div.innerHTML += "<br> (con una precisión de " + posicion.coords.accuracy + " metros)";
+    div.innerHTML += "<br> (con una precisión de " + posicion.coords.accuracy.toFixed(2) + " metros)";
 
     if (map === null){
         showMap(posicion.coords);
