@@ -30,7 +30,7 @@ function mostrarLocalizacion(posicion) {
     } else {
         centrarMapa(posicion.coords);
     }
-}
+} 
 
 function mostrarError(error) {
 	var errorTypes = {
