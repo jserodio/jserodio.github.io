@@ -30,44 +30,4 @@ input#volumen {
 span#volumentxt {
     text-align: center;
     vertical-align: middle;
-    /*  Ignorar esto
-
-     hacer que desaparezca el texto
-      
-    -webkit-animation: smooth 5s ease-in;
-    -moz-animation: smooth 5s ease-in;
-    -o-animation: smooth 5s ease-in;
-    -ms-animation: smooth 5s ease-in;
-    animation: smooth 5s ease-in;
-    */
 }
-
-/*  Ignorar esto
-
-Hacer que desaparezca el texto 
-
-@-webkit-keyframes smooth {
-    0% { opacity: 0;}
-    50% { opacity: 1;}
-    100% { opacity: 0;}
-}
-
-@-moz-keyframes smooth {
-    0% { opacity: 0;}
-    50% { opacity: 1;}
-    100% { opacity: 0;}
-}
-
-@-o-keyframes smooth {
-    0% { opacity: 0;}
-    50% { opacity: 1;}
-    100% { opacity: 0;}
-}
-
-@keyframes smooth {
-    0% { opacity: 0;}
-    50% { opacity: 1;}
-    100% { opacity: 0;}
-}
-
-*/
