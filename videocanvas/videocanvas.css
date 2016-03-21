@@ -1,0 +1,73 @@
+/* videocanvas.css */
+
+/* video */
+div#videoDiv {
+	position: relative;
+	width: 720px;
+	height: 480px;
+	top: 60px;
+	left: 190px;
+}
+
+video {
+	background-color: black;
+}
+
+div#videoDiv canvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+canvas#buffer {
+	display: none;
+}
+
+input#volumen {
+    vertical-align: middle;
+}
+
+span#volumentxt {
+    text-align: center;
+    vertical-align: middle;
+    /*  Ignorar esto
+
+     hacer que desaparezca el texto
+      
+    -webkit-animation: smooth 5s ease-in;
+    -moz-animation: smooth 5s ease-in;
+    -o-animation: smooth 5s ease-in;
+    -ms-animation: smooth 5s ease-in;
+    animation: smooth 5s ease-in;
+    */
+}
+
+/*  Ignorar esto
+
+Hacer que desaparezca el texto 
+
+@-webkit-keyframes smooth {
+    0% { opacity: 0;}
+    50% { opacity: 1;}
+    100% { opacity: 0;}
+}
+
+@-moz-keyframes smooth {
+    0% { opacity: 0;}
+    50% { opacity: 1;}
+    100% { opacity: 0;}
+}
+
+@-o-keyframes smooth {
+    0% { opacity: 0;}
+    50% { opacity: 1;}
+    100% { opacity: 0;}
+}
+
+@keyframes smooth {
+    0% { opacity: 0;}
+    50% { opacity: 1;}
+    100% { opacity: 0;}
+}
+
+*/

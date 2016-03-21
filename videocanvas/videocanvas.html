@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+<title>Video + Canvas</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="videocanvas.css">
+</head>
+<body>
+
+<form>
+    <input type="button" id="normal" value="Normal">
+	<input type="button" id="byn" value="B&N">
+    <input type="button" id="scifi" value="SciFi">
+    <input type="button" id="gameboy" value="GameBoy">
+    <input type="button" id="instagram" value="Instagram">
+    <input type="button" id="sepia" value="Sepia">
+    <input type="button" id="pause" value="Pause">
+    <span>Volume</span>
+    <input type="range" id="volumen" value="20">
+    <span id="volumentxt"></span>
+</form>
+
+<div id="videoDiv">
+    <video id="video" width="720" height="480"></video>
+    <canvas id="buffer" width="720" height="480"></canvas>
+    <canvas id="display" width="720" height="480"></canvas>
+</div>
+
+<script src="videocanvas.js"></script>
+</body>
+</html>
