@@ -1,0 +1,47 @@
+/* videocanvas.css */
+
+/* video */
+div#videoDiv {
+	position: relative;
+	width: 720px;
+	height: 480px;
+	top: 60px;
+	left: 190px;
+}
+
+video {
+	background-color: black;
+}
+
+div#videoDiv canvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+canvas#buffer {
+	display: none;
+}
+
+input#volumen {
+    vertical-align: middle;
+}
+
+span#volumentxt {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.sepia {
+    -webkit-filter: sepia(100%); /* Chrome, Safari, Opera */
+    filter: sepia(100%);
+}
+
+.grayscale {
+    -webkit-filter: grayscale(100%); /* Chrome, Safari, Opera */
+    filter: grayscale(100%);
+}
+
+.blur {
+    filter:blur(5px);
+}

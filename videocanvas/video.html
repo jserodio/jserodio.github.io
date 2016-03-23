@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+<title>Video + Canvas</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="video.css">
+</head>
+<body>
+
+<form>
+    <input type="button" id="sepia" value="Sepia">
+    <input type="button" id="grayscale" value="Grayscale">
+    <input type="button" id="blur" value="Blur">
+    <input type="button" id="pause" value="Pause">
+    <span>Volume</span>
+    <input type="range" id="volumen" value="0">
+    <span id="volumentxt"></span>
+</form>
+
+<div id="videoDiv">
+    <video id="video" width="720" height="480"></video>
+</div>
+
+<script src="video.js"></script>
+</body>
+</html>
