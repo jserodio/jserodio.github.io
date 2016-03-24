@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>HTML5 File Drag & Drop API</title>
+<link rel="stylesheet" type="text/css" media="all" href="filedrag.css" />
+</head>
+<body>
+    <form id="upload" action="index.html" method="POST"  
+                                enctype="multipart/form-data">
+        <fieldset>
+            <legend>Datos del cliente</legend>
+            <div>
+                <div>
+                <label for="nombre">Nombre: </label>
+                <input type="text" name="nombre" placeholder="Introduce tu nombre" autofocus required>
+                </div>
+                <div>
+                <label for="telefono">Telefono: </label>
+                <input type="tel" name="telefono" placeholder="Patrón: 123-456-789" pattern="\d{3}[\-]\d{3}[\-]\d{3}" required>
+                </div>
+                <div>
+                <label for="email">Email: </label>
+                <input type="email" name="email" placeholder="Introduce tu dirección de correo electrónico" required>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Libros</legend>
+            <div>
+                <label>Selecciona el libro:</label>
+                <input type="text" name="libro" list="libros" placeholder="Introduce un libro" required>
+                <datalist id="libros">
+                    <option value="La sangre de los elfos">La sangre de los elfos</option>
+                    <option value="Tiempo de odio">Tiempo de odio</option>
+                    <option value="Bautismo de fuego">Bautismo de fuego</option>
+                    <option value="La torre de la golondrina">La torre de la golondrina</option>
+                    <option value="La dama del lago">La dama del lago</option> 
+                </datalist>
+                <label for="cantidad">Cantidad (Máx. 5):</label>
+                <input type="number" name="cantidad" min="1" max="5" step="1" required>               
+            </div>
+        </fieldset>
+        <input type="file" id="fileselect" multiple>
+        <div id="filedrag">arrastra aquí tus ficheros</div>
+        <input type="submit" value="Enviar">
+    </form>
+    <div id="messages"><p>Mensajes de estado</p></div>
+    <script src="filedrag.js"></script>
+</body>
+</html>
