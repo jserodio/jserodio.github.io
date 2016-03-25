@@ -15,7 +15,6 @@ function Ball(x, y, angle, v, diameter, sticky) {
     // la velocidad inicial, diámetro de la bola y un atributo
     // sticky que indica si la bola está pegada a la raqueta
     var radius = 5;
-    // TU CÓDIGO AQUÍ
 
     this.draw = function(ctx) {
         // Pintar la bola en this.x, this.y
@@ -29,7 +28,6 @@ function Ball(x, y, angle, v, diameter, sticky) {
     };
 
     this.move = function(x, y) {
-        // TU CÓDIGO AQUÍ
         // actualizar los atributos this.x , this.y al valor que llega como parámetro
         // si éstos están definidos
         // si no
@@ -39,7 +37,22 @@ function Ball(x, y, angle, v, diameter, sticky) {
         // (animación basada en el tiempo)
         // OJO: la posición y no puede ser inferior a 0 en ningún momento
         // RECUERDA: delta es una variable global a la que puedes acceder...
-
+        if (x === undefined) {    
+            this.x = this.speed * Math.cos(this.angle);
+            var incX = Math.ceil(calcDistanceToMove(delta, this.x)); 
+            
+            // si x llegua a sus limites
+            // si y llega a sus limites , etc 
+        } else {
+            this.x = x;
+        }
+        
+        if (y === undefined) {
+            incY = this.speed * Math.sin(this.angle);
+        } else {
+            this.y = y;
+        }
+        
     };
 
 }
@@ -250,7 +263,8 @@ function Ball(x, y, angle, v, diameter, sticky) {
     
     // TU CÓDIGO AQUÍ
     // Instancia una bola con los parámetros del enunciado e introdúcela en el array balls
-
+    var bola = new Ball(10, 70, Math.PI/3, 10, 6, false);
+    bola.
     // start the animation
     requestAnimationFrame(mainLoop);
 
