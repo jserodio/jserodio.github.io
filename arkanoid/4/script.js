@@ -71,17 +71,9 @@ var GF = function() {
 
 
     var calcDistanceToMove = function(delta, speed) {
-        // A 60 fps; delta = 1/60 -> delta = 16,66 ms
-        // num_pixels_frame = (velocidad en px/seg * 16.66 ms) / 1000
-        // Si Speed = 5px, 60 fps * 5px = 300 px por segundo
-        
-        var pixsec;
-        if (fps === undefined) {
-            pixsec = speed * 60; // al principio asumimos 60 fps    
-        } else {
-            pixsec = speed * fps;    
-        }
-        return num_pixels_frame = (pixsec * delta) / 1000; //5;
+        // speed = 300 pixeles por segundo
+        // delta = 16,66 ms = 0,01666 segundos        
+        return num_pixels_frame = (speed * delta) / 1000; // 5 pixeles por frame
     };
 
     var updatePaddlePosition = function() {
@@ -103,7 +95,7 @@ var GF = function() {
         }
         
         x = x + (incX * direction);
-        console.log(x);
+        // console.log(x);
     }
 
     function timer(currentTime) {
