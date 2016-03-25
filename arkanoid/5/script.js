@@ -117,8 +117,7 @@ var GF = function() {
         }
         
         if (inputStates.space) {
-            console.log("¡bang! ¡pam, pam! ¡paiummm! 🔫");
-            console.log("");
+            // hacer algo
         }
         
     }
@@ -177,6 +176,8 @@ var GF = function() {
             if (e.keyCode === 32) {
                 // disparo
                 inputStates.space = true;
+                console.log("¡bang! ¡pam, pam! ¡paiummm! 🔫");
+                console.log("");
             }
             if (e.keyCode === 16) {
                 // moverse con precision (lento)
