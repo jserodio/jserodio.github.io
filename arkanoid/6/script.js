@@ -9,46 +9,48 @@ var x = 130,
 var delta;
 // var frames = 30;
 
-function Ball(x, y, angle, v, diameter, sticky) {
+// Funcion auxiliar
+var calcDistanceToMove = function(delta, speed) {
+    // speed = 300 pixeles por segundo
+    // delta = 16,66 ms = 0,01666 segundos
+    return num_pixels_frame = (speed * delta) / 1000; // 5 pixeles por frame
+};
+
+function Ball(x, y, angle, v, radius, sticky) {
     // @parametros
     // la posición inicial (x,y), el ángulo inicial de salida,
     // la velocidad inicial, diámetro de la bola y un atributo
     // sticky que indica si la bola está pegada a la raqueta
-    var radius = 5;
 
     this.draw = function(ctx) {
-        // Pintar la bola en this.x, this.y
-        // con radio = this.radius
-        // y color verde (green)
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI, true);
+        ctx.arc(x, y, radius, 0, 2*Math.PI, true);
         ctx.stroke();
         ctx.fillStyle = "green";
         ctx.fill();
     };
 
     this.move = function(x, y) {
-        // actualizar los atributos this.x , this.y al valor que llega como parámetro
-        // si éstos están definidos
-        // si no
-        // actuializar this.x , this.y a la nueva posición, siguiendo la fórmula del enunciado
-        // para calcular incX e incY
-        // usar la función calcDistanceToMove para calcular el incremento real de this.x , this.y
-        // (animación basada en el tiempo)
-        // OJO: la posición y no puede ser inferior a 0 en ningún momento
-        // RECUERDA: delta es una variable global a la que puedes acceder...
         if (x === undefined) {    
             this.x = this.speed * Math.cos(this.angle);
             var incX = Math.ceil(calcDistanceToMove(delta, this.x)); 
             
-            // si x llegua a sus limites
-            // si y llega a sus limites , etc 
+            if (this.x < w || this.x > 0) {
+                this.x = this.x + incX;
+            } 
+            
         } else {
             this.x = x;
         }
         
         if (y === undefined) {
-            incY = this.speed * Math.sin(this.angle);
+            this.y = this.speed * Math.sin(this.angle);
+            var incY = Math.ceil(calcDistanceToMove(delta, this.y));
+            
+            if (this.y < h || this.y > 0) {
+                this.y = this.y + incY;
+            }
+            
         } else {
             this.y = y;
         }
@@ -129,13 +131,6 @@ function Ball(x, y, angle, v, diameter, sticky) {
         ctx.save();
     }
 
-    // Funcion auxiliar
-    var calcDistanceToMove = function(delta, speed) {
-        // speed = 300 pixeles por segundo
-        // delta = 16,66 ms = 0,01666 segundos
-        return num_pixels_frame = (speed * delta) / 1000; // 5 pixeles por frame
-    };
-
     var updatePaddlePosition = function() {
 
         var incX = Math.ceil(calcDistanceToMove(delta, speed));
@@ -174,11 +169,11 @@ function Ball(x, y, angle, v, diameter, sticky) {
 
 
     function updateBalls() {
-    for (var i = balls.length - 1; i >= 0; i--) {
-        var ball = balls[i];
-        ball.move();
-        ball.draw(ctx);
-    }
+        for (var i = balls.length - 1; i >= 0; i--) {
+            var ball = balls[i];
+            ball.move();
+            ball.draw(ctx);
+        }
     }
 
     function timer(currentTime) {
@@ -187,25 +182,25 @@ function Ball(x, y, angle, v, diameter, sticky) {
         return aux;
     }
     var mainLoop = function(time) {
-    //main function, called each frame
-    measureFPS(time);
+        //main function, called each frame
+        measureFPS(time);
 
-    // number of ms since last frame draw
-    delta = timer(time);
+        // number of ms since last frame draw
+        delta = timer(time);
 
-    // Clear the canvas
-    clearCanvas();
+        // Clear the canvas
+        clearCanvas();
 
-    // Mover Vaus de izquierda a derecha
-    updatePaddlePosition();
+        // Mover Vaus de izquierda a derecha
+        updatePaddlePosition();
 
-    updateBalls();
+        updateBalls();
 
-    // draw Vaus
-    drawVaus(x, y);
+        // draw Vaus
+        drawVaus(x, y);
 
-    // call the animation loop every 1/60th of second
-    requestAnimationFrame(mainLoop);
+        // call the animation loop every 1/60th of second
+        requestAnimationFrame(mainLoop);
     };
 
     var start = function() {
@@ -261,10 +256,10 @@ function Ball(x, y, angle, v, diameter, sticky) {
             }
         }
     
-    // TU CÓDIGO AQUÍ
     // Instancia una bola con los parámetros del enunciado e introdúcela en el array balls
     var bola = new Ball(10, 70, Math.PI/3, 10, 6, false);
-    bola.
+    balls.push(bola);
+    
     // start the animation
     requestAnimationFrame(mainLoop);
 
