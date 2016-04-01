@@ -9,12 +9,61 @@ var x = 130,
 var delta;
 // var frames = 30;
 
-// Funcion auxiliar
-var calcDistanceToMove = function(delta, speed) {
-    // speed = 300 pixeles por segundo
-    // delta = 16,66 ms = 0,01666 segundos
-    return num_pixels_frame = (speed * delta) / 1000; // 5 pixeles por frame
-};
+function testCollisionWithWalls(ball, w, h) {
+    // @return  TRUE si toca borde inferior
+    //          FALSE en cualquier otro caso
+
+    var ret = false;
+
+
+    if ((ball.x + ball.radius) >= w) {      // toca borde derecho
+        ball.x = w-ball.radius;             // recolocar derecha -- 150 - 3 = 147 px
+        ball.angle = -ball.angle + Math.PI;
+    }
+
+    if ((ball.x - ball.radius) <= 0) {      // toca borde izquierdo
+        ball.x = ball.radius;               // recolocar izquierda -- 3 px
+        ball.angle = -ball.angle + Math.PI;
+    }
+
+    if ((ball.y - ball.radius) <= 0) {      // toca borde superior
+        ball.y = ball.radius;               // recolocar arriba -- 3 px
+        ball.angle = -ball.angle;
+    }
+
+    if ((ball.y + ball.radius) >= h ) {     // toca borde inferior
+        ball.y = h-ball.radius;             // recolocar debajo -- 150 - 3 = 147 px
+        ball.angle = -ball.angle;
+        ret = true;
+    }
+
+    return ret;
+ 
+}
+
+// Collisions between rectangle and circle
+function circRectsOverlap(x0, y0, w0, h0, cx, cy, r){
+    var testX = cx;
+    var testY = cy;
+    
+    if (testX < x0)
+        testX = x0;
+    if (testX > (x0 + w0))
+        testX = (x0 + w0);
+    if (testY < y0)
+        testY = y0;
+    if (testY > (y0 + h0))
+        testY = (y0 + h0);
+    
+    return (((cx - testX) * (cx - testX)+(cy - testY) * (cy - testY))< r * r);
+}
+
+    // Funcion auxiliar
+    var calcDistanceToMove = function(delta, speed) {
+        // speed = 300 pixeles por segundo
+        // delta = 16,66 ms = 0,01666 segundos
+        return num_pixels_frame = (speed * delta) / 1000; // 5 pixeles por frame
+    };
 
 function Ball(x, y, angle, v, diameter, sticky) {
 
@@ -39,6 +88,11 @@ function Ball(x, y, angle, v, diameter, sticky) {
     this.move = function(x, y) {
         var incX = 0;
         var incY = 0;
+
+        if ((x != undefined) && (y != undefined)) {
+            this.x = x;
+            this.y = y;
+        }
 
         incX = this.speed * Math.cos(this.angle);
         incY = this.speed * Math.sin(this.angle);
@@ -133,8 +187,9 @@ function Ball(x, y, angle, v, diameter, sticky) {
 
         // Si pulsa shift, se mueve con precision, más despacio
         if (inputStates.shift) {
-            incX = incX / 2;
+            incX = incX / 4;
         }
+
 
         if ( (x+vausWidth) >= w ) {
             //llego al limite
@@ -157,7 +212,6 @@ function Ball(x, y, angle, v, diameter, sticky) {
         if (inputStates.space) {
             // hacer algo
         }
-
     };
 
 
@@ -165,7 +219,13 @@ function Ball(x, y, angle, v, diameter, sticky) {
         for (var i = balls.length - 1; i >= 0; i--) {
             var ball = balls[i];
             ball.move();
+            var die = testCollisionWithWalls(ball, w, h);
             ball.draw(ctx);
+            var hit = circRectsOverlap(x, y, vausWidth, vausHeight, ball.x, ball.y, ball.radius);
+            if (hit) {
+                ball.y = ball.y - ball.radius;
+                ball.angle = -ball.angle;
+            }
         }
     }
 
@@ -201,11 +261,6 @@ function Ball(x, y, angle, v, diameter, sticky) {
     fpsContainer = document.createElement('div');
     document.body.appendChild(fpsContainer);
 
-    // Crea un listener para gestionar la pulsación
-    // de izquierda, derecha o espacio
-    // y actualiza inputStates.left .right o .space
-    // el listener será para keydown (pulsar)
-    // y otro para keyup
     document.onkeydown = function (e) {
             // Arrow Key Codes
             // 32 - spacebar
@@ -250,29 +305,15 @@ function Ball(x, y, angle, v, diameter, sticky) {
         }
 
     // Instancia una bola con los parámetros del enunciado e introdúcela en el array balls
-    var bola = new Ball(10, 70, Math.PI/3, 10, 6, false);
+    var bola = new Ball(10, 50, -Math.PI/3, 10, 6, false);
+    var bola1 = new Ball(20, 30, -Math.PI/3, 10, 6, false);
+    var bola2 = new Ball(10, 100, Math.PI/3, 10, 6, false);
     balls.push(bola);
+    balls.push(bola1);
+    balls.push(bola2);
 
     // start the animation
     requestAnimationFrame(mainLoop);
-
-    // TESTING
-    test('La bola sube hasta arriba', function(assert) {
-    var done = assert.async();
-    setTimeout(function() {
-    var verdes = 0;
-    for (var i=50; i<145; i++) {
-        // comprobar que la bola está pegada al techo, en algún punto de la esquina superior derecha
-        if (Array.prototype.slice.apply(canvas.getContext("2d").getImageData(i, 0, 1, 1).data)[1] > 0) verdes++; // componente G de RGB
-    }
-    assert.ok(verdes>2, "Passed!");
-    done();
-    }, 8000);
-
-    });
-
-
-
     };
 
     //our GameFramework returns a public API visible from outside its scope

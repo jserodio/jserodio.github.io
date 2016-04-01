@@ -9,6 +9,38 @@ var x = 130,
 var delta;
 // var frames = 30;
 
+function testCollisionWithWalls(ball, w, h) {
+    // @return  TRUE si toca borde inferior
+    //          FALSE en cualquier otro caso
+
+    var ret = false;
+
+
+    if ((ball.x + ball.radius) >= w) {      // toca borde derecho
+        ball.x = w-ball.radius;             // recolocar derecha -- 150 - 3 = 147 px
+        ball.angle = -ball.angle + Math.PI;
+    }
+
+    if ((ball.x - ball.radius) <= 0) {      // toca borde izquierdo
+        ball.x = ball.radius;               // recolocar izquierda -- 3 px
+        ball.angle = -ball.angle + Math.PI;
+    }
+
+    if ((ball.y - ball.radius) <= 0) {      // toca borde superior
+        ball.y = ball.radius;               // recolocar arriba -- 3 px
+        ball.angle = -ball.angle;
+    }
+
+    if ((ball.y + ball.radius) >= h ) {     // toca borde inferior
+        ball.y = h-ball.radius;             // recolocar debajo -- 150 - 3 = 147 px
+        ball.angle = -ball.angle;
+        ret = true;
+    }
+
+    return ret;
+
+}
+
 // Funcion auxiliar
 var calcDistanceToMove = function(delta, speed) {
     // speed = 300 pixeles por segundo
@@ -42,13 +74,13 @@ function Ball(x, y, angle, v, diameter, sticky) {
 
         incX = this.speed * Math.cos(this.angle);
         incY = this.speed * Math.sin(this.angle);
-        
+
        this.x = this.x + calcDistanceToMove(delta, incX);
-                    
+
         if (this.y > 0) {
             this.y = this.y - calcDistanceToMove(delta, incY);
         }
-       
+
     };
 
 }
@@ -136,6 +168,7 @@ function Ball(x, y, angle, v, diameter, sticky) {
             incX = incX / 2;
         }
 
+
         if ( (x+vausWidth) >= w ) {
             //llego al limite
             limiteDerecha = true;
@@ -165,6 +198,7 @@ function Ball(x, y, angle, v, diameter, sticky) {
         for (var i = balls.length - 1; i >= 0; i--) {
             var ball = balls[i];
             ball.move();
+            var die = testCollisionWithWalls(ball, w, h);
             ball.draw(ctx);
         }
     }
@@ -255,24 +289,6 @@ function Ball(x, y, angle, v, diameter, sticky) {
 
     // start the animation
     requestAnimationFrame(mainLoop);
-
-    // TESTING
-    test('La bola sube hasta arriba', function(assert) {
-    var done = assert.async();
-    setTimeout(function() {
-    var verdes = 0;
-    for (var i=50; i<145; i++) {
-        // comprobar que la bola está pegada al techo, en algún punto de la esquina superior derecha
-        if (Array.prototype.slice.apply(canvas.getContext("2d").getImageData(i, 0, 1, 1).data)[1] > 0) verdes++; // componente G de RGB
-    }
-    assert.ok(verdes>2, "Passed!");
-    done();
-    }, 8000);
-
-    });
-
-
-
     };
 
     //our GameFramework returns a public API visible from outside its scope
@@ -284,3 +300,37 @@ function Ball(x, y, angle, v, diameter, sticky) {
 
 var game = new GF();
 game.start();
+
+var ball1 = new Ball(48.68599000001268,2.993899778876827,1.0471975511965976, 10, 6, false);
+
+test('Colisión con pared superior', function(assert) {
+  var res_sup = testCollisionWithWalls(ball1, w, h);
+  assert.equal(ball1.x, 48.68599000001268, "Passed!");
+  assert.equal(ball1.y, 3, "Passed!");
+  assert.equal(ball1.angle,-1.0471975511965976, "Passed!");
+  assert.equal(res_sup, false);
+});
+
+
+var ball2 = new Ball( 131.84048499999335,147.02781021770147,-1.0471975511965976
+, 10, 6, false);
+
+test('Colisión con pared inferior', function(assert) {
+  var res_bottom = testCollisionWithWalls(ball2, w, h);
+  assert.equal(ball2.x,  131.84048499999335 , "Passed!");
+  assert.equal(ball2.y, 147, "Passed!");
+  assert.equal(ball2.angle,1.0471975511965976, "Passed!");
+  assert.equal(res_bottom, true);
+});
+
+
+var ball3 = new Ball(  147.0802850000473 ,120.60389210271744,1.0471975511965976
+, 10, 6, false);
+
+test('Colisión con pared izquierda', function(assert) {
+  var res_left = testCollisionWithWalls(ball3, w, h);
+  assert.equal(ball3.x, 147, "Passed!");
+  assert.equal(ball3.y,  120.60389210271744, "Passed!");
+  assert.equal(ball3.angle,  2.0943951023931957, "Passed!");
+  assert.equal(res_left, false);
+});
