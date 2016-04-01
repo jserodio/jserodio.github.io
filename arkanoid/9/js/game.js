@@ -139,17 +139,8 @@ function Brick(x,y,color) {
 Brick.prototype = {
 	 draw : function(ctx) {
         ctx.restore();
-        ctx.beginPath();
-        ctx.moveTo(this.x,this.y);
-        ctx.lineTo(this.x+ANCHURA_LADRILLO,this.y);
-        ctx.lineTo(this.x+ANCHURA_LADRILLO,this.y+ALTURA_LADRILLO);
-        ctx.lineTo(this.x, this.y+ALTURA_LADRILLO);
-        ctx.closePath();
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "black";
-        ctx.stroke();
         ctx.fillStyle = this.color;
-        ctx.fill();
+        ctx.fillRect(this.x, this.y, ANCHURA_LADRILLO, ALTURA_LADRILLO);
         ctx.save();
 	}
 };
@@ -197,10 +188,10 @@ function Ball(x, y, angle, v, diameter, sticky) {
             this.x = this.x + calcDistanceToMove(delta, incX);
             if (this.y > 0) {
                 this.y = this.y - calcDistanceToMove(delta, incY);
-            } 
+            }
         }
     };
-    
+
     this.setSticky = function(value){
         this.sticky = value;
     }
@@ -220,7 +211,7 @@ var GF = function() {
   var bricks = [];
   var bricksLeft;
 
-  var lifes = 1;
+  var lifes = 3;
   var gameStates = {
     gameRunning: false,
     gameOver: false
@@ -234,7 +225,6 @@ var GF = function() {
         shift: false
   };
 
-    // NUEVO: VAUS en objeto literal
     var paddle = {
         dead: true,
         x: 10,
@@ -242,7 +232,7 @@ var GF = function() {
         width: 32,
         height: 8,
         speed: 300, // pixels/s
-      	sticky: false
+        sticky: false
     };
 
   var ladrillos = [
@@ -375,17 +365,8 @@ var GF = function() {
   function drawVaus(x, y) {
         // Función para pintar la raqueta Vaus
         ctx.restore();
-        ctx.beginPath();
-        ctx.moveTo(x,y);
-        ctx.lineTo(x+paddle.width,y);
-        ctx.lineTo(x+paddle.width,y+paddle.height);
-        ctx.lineTo(x, y+paddle.height);
-        ctx.closePath();
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "black";
-        ctx.stroke();
         ctx.fillStyle = "black";
-        ctx.fill();
+        ctx.fillRect(x, y, paddle.width, paddle.height);
         ctx.save();
   }
 
@@ -516,28 +497,28 @@ function displayMsg(msg, x, y, color) {
 
     // dibujar HUD vidas
     displayLifes();
-    
+
     // gameStates.gameOver se actualiza en ctr+f -> die
     if (paddle.dead && !gameStates.gameOver) {
         spawnBall(balls, paddle);
         paddle.dead = false;
     }
-    
+
     if (!gameStates.gameRunning) {   // pause (game not running)
         if (!gameStates.gameOver) {
-            displayMsg("Press space button.", w/4, h*3/4, "black");    
+            displayMsg("Press space button.", w/4, h*3/4, "black");
         } else {
             ctx.restore();
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, w, h);
             ctx.save();
-            displayMsg("Game Over.", w/3+5, h/2+10, "white"); 
+            displayMsg("Game Over.", w/3+5, h/2+10, "white");
         }
-        
+
     }
-    
+
     // call the animation loop every 1/60th of second
-    requestAnimationFrame(mainLoop);    
+    requestAnimationFrame(mainLoop);
   };
 
     var start = function() {
