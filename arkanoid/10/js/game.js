@@ -183,7 +183,7 @@ function Ball(x, y, angle, v, diameter, sticky) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, true);
         ctx.stroke();
-        ctx.fillStyle = "green";
+        ctx.fillStyle = "white";
         ctx.fill();
         ctx.save();
     };
@@ -485,6 +485,11 @@ function displayMsg(msg, x, y, color) {
                     ball.x = paddle.x - ball.radius;
                     ball.angle = ball.angle + Math.PI;
                     break;
+            }
+            if (inputStates.right) {
+                ball.angle *= (ball.angle < 0 ? 0.5 : 1.5);
+            } else if (inputStates.left) {
+                ball.angle *= (ball.angle > 0 ? 0.5 : 1.5);
             }
             sound.play('vaushit');
         }
