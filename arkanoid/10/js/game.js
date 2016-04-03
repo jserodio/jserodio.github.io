@@ -7,6 +7,8 @@ var h = canvas.height;
 var delta;
 var ANCHURA_LADRILLO = 16,
   	ALTURA_LADRILLO = 8;
+var music;
+var sound;
 
 // var frames = 30;
 
@@ -109,16 +111,19 @@ function testCollisionWithWalls(ball, w, h) {
     if ((ball.x + ball.radius) >= w) {      // toca borde derecho
         ball.x = w-ball.radius;             // recolocar derecha -- 150 - 3 = 147 px
         ball.angle = -ball.angle + Math.PI;
+        sound.play('wallhit');
     }
 
     if ((ball.x - ball.radius) <= 0) {      // toca borde izquierdo
         ball.x = ball.radius;               // recolocar izquierda -- 3 px
         ball.angle = -ball.angle + Math.PI;
+        sound.play('wallhit');
     }
 
     if ((ball.y - ball.radius) <= 0) {      // toca borde superior
         ball.y = ball.radius;               // recolocar arriba -- 3 px
         ball.angle = -ball.angle;
+        sound.play('wallhit');
     }
 
     if ((ball.y + ball.radius) >= h ) {     // toca borde inferior
@@ -241,7 +246,7 @@ var GF = function() {
         width: 32,
         height: 8,
         speed: 300,     // pixels/s
-        sticky: false,  // path/2/sprite        x,y      h,w   delta  frameNumbers    
+        sticky: false,  // path/2/sprite        x,y      h,w   delta  frameNumbers
         sprite: new Sprite('img/sprites.png', [224,40], [32,8], 16, [0,1])
     };
 
@@ -366,6 +371,7 @@ var GF = function() {
             }
             ball.speed += 5;
             bricks.splice(i, 1);
+            sound.play('brickhit');
             }
     }
     // devuelve el número de ladrillos que quedan
@@ -454,7 +460,7 @@ function displayMsg(msg, x, y, color) {
                     gameStates.gameOver = true;
                 }
             }
-
+            sound.play('die');
         }
 
         bricksLeft = testBrickCollision(ball);
@@ -476,6 +482,7 @@ function displayMsg(msg, x, y, color) {
                     ball.angle = ball.angle + Math.PI;
                     break;
             }
+            sound.play('vaushit');
         }
         ball.draw(ctx);
       }
@@ -534,23 +541,50 @@ function displayMsg(msg, x, y, color) {
     requestAnimationFrame(mainLoop);
   };
 
+    var loadAssets = function() {
+        // load sound using howler.js
+        music = new Howl({
+            urls: ['assets/Game_Start.ogg'],
+            volume: 0.2,
+            onload: function() {
+               sound = new Howl({
+                    urls: ['assets/sounds.mp3'],
+                    volume: 0.2,
+                    buffer: true,
+                    sprite: {
+                        wallhit: [0, 700],
+                        die: [1000, 2000],
+                        laser: [3000, 700], // sound.play('laser');
+                        vaushit: [17000, 500],
+                        brickhit: [18500, 500]
+                    },
+                    onload: function() {
+                        init(); // when every music or sound is loaded
+                    }
+                });
+            }
+        });
+        
+    };
+
     var init = function() {
         startNewGame();
         // start the animation
         requestAnimationFrame(mainLoop);
     };
-    
+
     var startNewGame = function() {
         // create wall bricks
         createBricks();
         // init background sprite
-        initTerrain();      
+        initTerrain();
+        music.play();
     };
-    
+
     var initTerrain = function(){
         var terrain = new Sprite('img/sprites.png', [0, 80], [24, 32]);
         terrainPattern = ctx.createPattern(terrain.image(),'repeat');
-    }
+    };
 
     var start = function() {
         // adds a div for displaying the fps value
@@ -561,7 +595,7 @@ function displayMsg(msg, x, y, color) {
         // start loading sprites
         resources.load(['img/sprites.png']);
         // when ready jump to init function.
-        resources.onReady(init);
+        resources.onReady(loadAssets);
     };
 
   //our GameFramework returns a public API visible from outside its scope
