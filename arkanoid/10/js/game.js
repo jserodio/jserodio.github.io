@@ -5,8 +5,8 @@ var ctx = canvas.getContext("2d");
 var w = canvas.width;
 var h = canvas.height;
 var delta;
-var ANCHURA_LADRILLO = 20,
-  	ALTURA_LADRILLO = 10;
+var ANCHURA_LADRILLO = 16,
+  	ALTURA_LADRILLO = 8;
 
 // var frames = 30;
 
@@ -141,7 +141,7 @@ function Brick(x,y,color) {
         "red"   :   [0,0], // red
         "grey"  :   [48,8]  // silver
     };
-    this.sprite = new Sprite('img/sprites.png', coords[color], [16,8], 16, [0]);
+    this.sprite = new Sprite('img/sprites.png', coords[color], [ANCHURA_LADRILLO,ALTURA_LADRILLO], 16, [0]);
 }
 
 Brick.prototype = {
