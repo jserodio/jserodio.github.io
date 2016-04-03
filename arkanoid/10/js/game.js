@@ -211,6 +211,28 @@ function Ball(x, y, angle, v, diameter, sticky) {
     }
 
 }
+   
+function Bonus() {
+    this.type = "L";
+    this.x = 50;
+    this.y = 50;
+    this.width = 16;
+    this.height = 8;
+    this.speed = 20;
+    this.sprite =  new Sprite('img/sprites.png', [288,0], [16,8], 0.5, [0,1,2,3]);
+}
+Bonus.prototype = {
+    draw : function(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        this.sprite.render(ctx);
+        ctx.restore();
+    },
+    move : function() {
+        this.sprite.update(delta);  // aim to the new frame animation
+        this.y += calcDistanceToMove(delta, this.speed); // move bonus down
+    }
+}
 
 // GAME FRAMEWORK STARTS HERE
 var GF = function() {
@@ -223,6 +245,7 @@ var GF = function() {
   var terrainPattern;
   var balls = [];
   var bricks = [];
+  var bonuses = [];
   var bricksLeft;
 
   var lifes = 3;
@@ -249,7 +272,7 @@ var GF = function() {
         sticky: false,  // path/2/sprite        x,y      h,w   delta  frameNumbers
         sprite: new Sprite('img/sprites.png', [224,40], [32,8], 16, [0,1])
     };
-
+    
   var ladrillos = [
     // grey - 13 bricks each row
     {x: 11, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO), y: 20, c: 'grey'},
@@ -376,6 +399,8 @@ var GF = function() {
             ball.speed += 5;
             bricks.splice(i, 1);
             sound.play('brickhit');
+            // bonus
+            
             }
     }
     // devuelve el número de ladrillos que quedan
@@ -496,6 +521,14 @@ function displayMsg(msg, x, y, color) {
         ball.draw(ctx);
       }
     }
+    
+    function updateBonus() {
+        for (var i = bonuses.length - 1; i >= 0; i--) {
+            var bonus = bonuses[i];
+            bonus.draw(ctx, 50, 50);
+            bonus.move(); 
+        }
+    }
 
   function timer(currentTime) {
     var aux = currentTime - oldTime;
@@ -517,6 +550,8 @@ function displayMsg(msg, x, y, color) {
     updatePaddlePosition();
 
     updateBalls();
+    
+    updateBonus();
 
     // draw Vaus
     drawVaus(paddle.x, paddle.y);
@@ -586,6 +621,9 @@ function displayMsg(msg, x, y, color) {
         createBricks();
         // init background sprite
         initTerrain();
+        // add bonus
+        bonuses.push(new Bonus());
+        // play initial music
         music.play();
     };
 
