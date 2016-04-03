@@ -219,7 +219,7 @@ function Bonus() {
     this.width = 16;
     this.height = 8;
     this.speed = 20;
-    this.sprite =  new Sprite('img/sprites.png', [288,0], [16,8], 0.5, [0,1,2,3]);
+    this.sprite =  new Sprite('img/sprites.png', [288,0], [16,8], 0.008, [0,1,2,3,4,5,6,7]);
 }
 Bonus.prototype = {
     draw : function(ctx) {
@@ -270,7 +270,7 @@ var GF = function() {
         height: 8,
         speed: 300,     // pixels/s
         sticky: false,  // path/2/sprite        x,y      h,w   delta  frameNumbers
-        sprite: new Sprite('img/sprites.png', [224,40], [32,8], 16, [0,1])
+        sprite: new Sprite('img/sprites.png', [224,32], [32,8], 16, [0,1,2,3,2,1])
     };
     
   var ladrillos = [
@@ -396,7 +396,7 @@ var GF = function() {
                     ball.x = ladrillo.x - ball.radius;
                     break;
             }
-            ball.speed += 5;
+            ball.speed += 2;
             bricks.splice(i, 1);
             sound.play('brickhit');
             // bonus
@@ -511,10 +511,11 @@ function displayMsg(msg, x, y, color) {
                     ball.angle = ball.angle + Math.PI;
                     break;
             }
+            // spin effect
             if (inputStates.right) {
-                ball.angle *= (ball.angle < 0 ? 0.5 : 1.5);
+                ball.angle *= (ball.angle < 0 ? 0.8 : 1.2);
             } else if (inputStates.left) {
-                ball.angle *= (ball.angle > 0 ? 0.5 : 1.5);
+                ball.angle *= (ball.angle > 0 ? 0.8 : 1.2);
             }
             sound.play('vaushit');
         }
