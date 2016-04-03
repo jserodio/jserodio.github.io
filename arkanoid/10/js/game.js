@@ -251,50 +251,54 @@ var GF = function() {
     };
 
   var ladrillos = [
-    // grey
-    {
-      x: 20,
-      y: 20,
-      c: 'grey'
-    }, {
-      x: (20 * 2 + ANCHURA_LADRILLO),
-      y: 20,
-      c: 'grey'
-    }, {
-      x: 20 * 3 + ANCHURA_LADRILLO * 2,
-      y: 20,
-      c: 'grey'
-    }, {
-      x: 20 * 4 + ANCHURA_LADRILLO * 3,
-      y: 20,
-      c: 'grey'
-    }, {
-      x: 20 * 5 + ANCHURA_LADRILLO * 4,
-      y: 20,
-      c: 'grey'
-    },
+    // grey - 13 bricks each row
+    {x: 11, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO), y: 20, c: 'grey'},
+    {x: (11+ANCHURA_LADRILLO)+16, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 20, c: 'grey'},
+    {x: (11+ANCHURA_LADRILLO)+16*3, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 20, c: 'grey'},
+    {x: (11+ANCHURA_LADRILLO)+16*5, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 20, c: 'grey'},
+    {x: (11+ANCHURA_LADRILLO)+16*7, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 20, c: 'grey'},
+    {x: (11+ANCHURA_LADRILLO)+16*9, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 20, c: 'grey'},
+    {x: (11+ANCHURA_LADRILLO)+16*11, y: 20, c: 'grey'},
     // red
-    {
-      x: 20,
-      y: 42,
-      c: 'red'
-    }, {
-      x: 20 * 2 + ANCHURA_LADRILLO,
-      y: 42,
-      c: 'red'
-    }, {
-      x: 20 * 3 + ANCHURA_LADRILLO * 2,
-      y: 42,
-      c: 'red'
-    }, {
-      x: 20 * 4 + ANCHURA_LADRILLO * 3,
-      y: 42,
-      c: 'red'
-    }, {
-      x: 20 * 5 + ANCHURA_LADRILLO * 4,
-      y: 42,
-      c: 'red'
-    }
+    {x: 11, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO), y: 28, c: 'red'},
+    {x: (11+ANCHURA_LADRILLO)+16, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 28, c: 'red'},
+    {x: (11+ANCHURA_LADRILLO)+16*3, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 28, c: 'red'},
+    {x: (11+ANCHURA_LADRILLO)+16*5, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 28, c: 'red'},
+    {x: (11+ANCHURA_LADRILLO)+16*7, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 28, c: 'red'},
+    {x: (11+ANCHURA_LADRILLO)+16*9, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 28, c: 'red'},
+    {x: (11+ANCHURA_LADRILLO)+16*11, y: 28, c: 'red'},
+    // yellow
+    {x: 11, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO), y: 36, c: 'yellow'},
+    {x: (11+ANCHURA_LADRILLO)+16, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 36, c: 'yellow'},
+    {x: (11+ANCHURA_LADRILLO)+16*3, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 36, c: 'yellow'},
+    {x: (11+ANCHURA_LADRILLO)+16*5, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 36, c: 'yellow'},
+    {x: (11+ANCHURA_LADRILLO)+16*7, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 36, c: 'yellow'},
+    {x: (11+ANCHURA_LADRILLO)+16*9, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 36, c: 'yellow'},
+    {x: (11+ANCHURA_LADRILLO)+16*11, y: 36, c: 'yellow'},
+    // blue
+    {x: 11, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO), y: 44, c: 'blue'},
+    {x: (11+ANCHURA_LADRILLO)+16, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 44, c: 'blue'},
+    {x: (11+ANCHURA_LADRILLO)+16*3, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 44, c: 'blue'},
+    {x: (11+ANCHURA_LADRILLO)+16*5, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 44, c: 'blue'},
+    {x: (11+ANCHURA_LADRILLO)+16*7, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 44, c: 'blue'},
+    {x: (11+ANCHURA_LADRILLO)+16*9, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 44, c: 'blue'},
+    {x: (11+ANCHURA_LADRILLO)+16*11, y: 44, c: 'blue'},
+    // pink
+    {x: 11, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO), y: 52, c: 'pink'},
+    {x: (11+ANCHURA_LADRILLO)+16, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 52, c: 'pink'},
+    {x: (11+ANCHURA_LADRILLO)+16*3, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 52, c: 'pink'},
+    {x: (11+ANCHURA_LADRILLO)+16*5, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 52, c: 'pink'},
+    {x: (11+ANCHURA_LADRILLO)+16*7, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 52, c: 'pink'},
+    {x: (11+ANCHURA_LADRILLO)+16*9, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 52, c: 'pink'},
+    {x: (11+ANCHURA_LADRILLO)+16*11, y: 52, c: 'pink'},
+    // green
+    {x: 11, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO), y: 60, c: 'green'},
+    {x: (11+ANCHURA_LADRILLO)+16, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 60, c: 'green'},
+    {x: (11+ANCHURA_LADRILLO)+16*3, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 60, c: 'green'},
+    {x: (11+ANCHURA_LADRILLO)+16*5, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 60, c: 'green'},
+    {x: (11+ANCHURA_LADRILLO)+16*7, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 60, c: 'green'},
+    {x: (11+ANCHURA_LADRILLO)+16*9, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 60, c: 'green'},
+    {x: (11+ANCHURA_LADRILLO)+16*11, y: 60, c: 'green'}
   ];
 
 
@@ -553,8 +557,8 @@ function displayMsg(msg, x, y, color) {
                     buffer: true,
                     sprite: {
                         wallhit: [0, 700],
-                        die: [1000, 2000],
-                        laser: [3000, 700], // sound.play('laser');
+                        die: [1000, 1700],
+                        laser: [3000, 700],
                         vaushit: [17000, 500],
                         brickhit: [18500, 500]
                     },
@@ -564,7 +568,6 @@ function displayMsg(msg, x, y, color) {
                 });
             }
         });
-        
     };
 
     var init = function() {
