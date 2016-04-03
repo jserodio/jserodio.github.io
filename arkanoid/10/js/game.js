@@ -1,7 +1,7 @@
 // Variables globales de utilidad
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
-	ctx.save();
+	//ctx.save();
 var w = canvas.width;
 var h = canvas.height;
 var delta;
@@ -134,27 +134,22 @@ function Brick(x,y,color) {
     this.x = x;
     this.y = y;
     var coords = {
-        "green" :   [16,08], // green
-        "pink"  :   [48,00], // pink
-        "blue"  :   [32,08], // blue
-        "yellow":   [16,00], // yellow
-        "red"   :   [00,00], // red
-        "grey":   [48,08]  // silver
+        "green" :   [16,8], // green
+        "pink"  :   [48,0], // pink
+        "blue"  :   [32,8], // blue
+        "yellow":   [16,0], // yellow
+        "red"   :   [0,0], // red
+        "grey"  :   [48,8]  // silver
     };
-    console.log(color);
-    this.sprite = new Sprite('img/sprites.png', coords[color], [16,8]);
+    this.sprite = new Sprite('img/sprites.png', coords[color], [16,8], 16, [0]);
 }
 
 Brick.prototype = {
-	 draw : function(ctx) {
-        
-        // ctx.translate(this.x, this.y);
-        // this.sprite.update(delta);
-        // this.sprite.render(ctx);
-        
+    draw : function(ctx) {
         ctx.restore();
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, ANCHURA_LADRILLO, ALTURA_LADRILLO);
+        ctx.translate(this.x,this.y);
+        this.sprite.render(ctx);
+        ctx.resetTransform();
         ctx.save();
 	}
 };
@@ -339,8 +334,10 @@ var GF = function() {
 
   // clears the canvas content
   function clearCanvas() {
+    ctx.restore();
     ctx.fillStyle = terrainPattern;
     ctx.fillRect(0, 0, w, h);
+    ctx.save();
   }
 
   function testBrickCollision(ball) {
@@ -378,8 +375,11 @@ var GF = function() {
   // Función para pintar la raqueta Vaus
   function drawVaus(x, y) {
         // Función para pintar la raqueta Vaus
+        ctx.restore();
         ctx.translate(x,y);
         paddle.sprite.render(ctx);
+        ctx.resetTransform();
+        ctx.save();
   }
 
 function displayLifes() {
