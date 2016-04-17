@@ -60,7 +60,7 @@ function spawnBall(balls, paddle) {
     var sticky = true;
     var coorX = (2*paddle.x+paddle.width)/2;
     var coorY = paddle.y-BALLDIAMETER/2-1;
-    var randomSpeed = Math.floor(Math.random()*50+40);
+    var randomSpeed = Math.floor(Math.random()*20+25);
     var randomAngle = Math.floor(Math.random()*2+1);
     if (randomAngle === 1)
         randomAngle = Math.PI/4;
@@ -211,7 +211,7 @@ function Ball(x, y, angle, v, diameter, sticky) {
     }
 
 }
-   
+
 function Bonus() {
     this.type = "L";
     this.x = 50;
@@ -272,7 +272,7 @@ var GF = function() {
         sticky: false,  // path/2/sprite        x,y      h,w   delta  frameNumbers
         sprite: new Sprite('img/sprites.png', [224,32], [32,8], 16, [0,1,2,3,2,1])
     };
-    
+
   var ladrillos = [
     // grey - 13 bricks each row
     {x: 11, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO), y: 20, c: 'grey'},
@@ -400,7 +400,7 @@ var GF = function() {
             bricks.splice(i, 1);
             sound.play('brickhit');
             // bonus
-            
+
             }
     }
     // devuelve el número de ladrillos que quedan
@@ -513,21 +513,21 @@ function displayMsg(msg, x, y, color) {
             }
             // spin effect
             if (inputStates.right) {
-                ball.angle *= (ball.angle < 0 ? 0.8 : 1.2);
+                ball.angle *= (ball.angle < 0 ? 1 : 1.5);
             } else if (inputStates.left) {
-                ball.angle *= (ball.angle > 0 ? 0.8 : 1.2);
+                ball.angle *= (ball.angle > 0 ? 1 : 1.5);
             }
             sound.play('vaushit');
         }
         ball.draw(ctx);
       }
     }
-    
+
     function updateBonus() {
         for (var i = bonuses.length - 1; i >= 0; i--) {
             var bonus = bonuses[i];
             bonus.draw(ctx, 50, 50);
-            bonus.move(); 
+            bonus.move();
         }
     }
 
@@ -551,7 +551,7 @@ function displayMsg(msg, x, y, color) {
     updatePaddlePosition();
 
     updateBalls();
-    
+
     updateBonus();
 
     // draw Vaus
