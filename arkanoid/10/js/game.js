@@ -513,9 +513,9 @@ function displayMsg(msg, x, y, color) {
             }
             // spin effect
             if (inputStates.right) {
-                ball.angle *= (ball.angle < 0 ? 0.8 : 1.2);
+                ball.angle *= (ball.angle < 0 ? 0.5 : 1.5);
             } else if (inputStates.left) {
-                ball.angle *= (ball.angle > 0 ? 0.8 : 1.2);
+                ball.angle *= (ball.angle > 0 ? 0.5 : 1.5);
             }
             sound.play('vaushit');
         }
