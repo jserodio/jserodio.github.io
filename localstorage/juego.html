@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Damas inglesas</title>
+<script src="service-worker-register.js"></script>
+<script src="juego.js"></script>
+<style rel="stylesheet">
+  #guardar{ margin-left: 35px}
+</style>
+</head>
+<body>
+<h1>Damas inglesas</h1>
+<p id="movimientos">Movimientos: <span id="count">0</span> <button id="guardar">Guardar posiciones</button><button id="cargar">Cargar posiciones</button></p>
+<canvas id="lienzo" width="600" height="300"></canvas>
+<script>
+  iniciarJuego(document.getElementById('lienzo'), document.getElementById('count'));
+</script>
+</body>
+</html>
+
