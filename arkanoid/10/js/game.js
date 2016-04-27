@@ -40,7 +40,7 @@ function inicializarGestorTeclado(inputStates) {
         }
         if (e.keyCode === 80 || e.keyCode === 112) {
             // pause
-            
+
         }
     };
 
@@ -60,7 +60,11 @@ function inicializarGestorTeclado(inputStates) {
         }
         if (e.keyCode === 80 || e.keyCode === 112) {
             //inputStates.pause = false;
-            inputStates.pause ? inputStates.pause = false : inputStates.pause = true
+            if (inputStates.pause) {
+                inputStates.pause = false;    
+            } else {
+                inputStates.pause = true;   
+            }
         }
     }
 }
@@ -489,18 +493,22 @@ function displayMsg(msg, x, y, color) {
         }
         
         if (inputStates.pause) {
+
             if (gameStates.gameRunning) {
+                console.log("pausing game");
                 for (var i = balls.length - 1; i >= 0; i--) {
-                    balls[i].stop();
-                }
-                gameStates.gameRunning = false;
+                        balls[i].stop();
+                    }
+                gameStates.gameRunning = false;   
             } else {
+                console.log("playing game.");
                 for (var i = balls.length - 1; i >= 0; i--) {
                     balls[i].play();
                 }
-                gameStates.gameRunning = true;   
-            }
+                gameStates.gameRunning = true;
+            }  
         }
+
   };
 
 
@@ -608,7 +616,7 @@ function displayMsg(msg, x, y, color) {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, w, h);
             ctx.save();
-            displayMsg("Game Over.", w/3+5, h/2+10, "white");
+            displayMsg("Game Over.", w/2.2, h/2+10, "white");
         }
 
     }
