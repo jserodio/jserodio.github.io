@@ -5,8 +5,9 @@ var ctx = canvas.getContext("2d");
 var w = canvas.width;
 var h = canvas.height;
 var delta;
-var ANCHURA_LADRILLO = 16,
-  	ALTURA_LADRILLO = 8;
+var ANCHURA_LADRILLO = 42,
+  	ALTURA_LADRILLO = 20;
+var SPRITES = 'img/bigsprites.png';
 var music;
 var sound;
 
@@ -20,6 +21,7 @@ function inicializarGestorTeclado(inputStates) {
         // 38 - up
         // 39 - right
         // 40 - down
+        // 80/112 - p/P key pause
         if (e.keyCode === 37) {
             // izquierda
             inputStates.left = true;
@@ -35,6 +37,10 @@ function inicializarGestorTeclado(inputStates) {
         if (e.keyCode === 16) {
             // moverse con precision (lento)
             inputStates.shift = true;
+        }
+        if (e.keyCode === 80 || e.keyCode === 112) {
+            // pause
+            
         }
     };
 
@@ -52,22 +58,26 @@ function inicializarGestorTeclado(inputStates) {
         if (e.keyCode === 16) {
             inputStates.shift = false;
         }
+        if (e.keyCode === 80 || e.keyCode === 112) {
+            //inputStates.pause = false;
+            inputStates.pause ? inputStates.pause = false : inputStates.pause = true
+        }
     }
 }
 
 function spawnBall(balls, paddle) {
     var BALLDIAMETER = 6;
-    var sticky = true;
     var coorX = (2*paddle.x+paddle.width)/2;
     var coorY = paddle.y-BALLDIAMETER/2-1;
-    var randomSpeed = Math.floor(Math.random()*20+25);
+    var randomSpeed = Math.floor(Math.random()*60+100);
     var randomAngle = Math.floor(Math.random()*2+1);
     if (randomAngle === 1)
         randomAngle = Math.PI/4;
     else if (randomAngle === 2)
         randomAngle = Math.PI*3/4;
 
-    var bola = new Ball(coorX, coorY, randomAngle, randomSpeed, BALLDIAMETER, sticky);
+    var bola = new Ball(coorX, coorY, randomAngle, randomSpeed, BALLDIAMETER);
+    bola.stop(); // iniciamos la bola parada
     balls.push(bola);
 }
 
@@ -139,14 +149,14 @@ function Brick(x,y,color) {
     this.x = x;
     this.y = y;
     var coords = {
-        "green" :   [16,8], // green
-        "pink"  :   [48,0], // pink
-        "blue"  :   [32,8], // blue
-        "yellow":   [16,0], // yellow
-        "red"   :   [0,0], // red
-        "grey"  :   [48,8]  // silver
+        "red"   :   [0,25], // red
+        "pink"  :   [44,25], // pink
+        "blue"  :   [88,25], // blue
+        "green" :   [132,25], // green
+        "yellow":   [176,25], // yellow
+        "grey"  :   [220,25]  // silver
     };
-    this.sprite = new Sprite('img/sprites.png', coords[color], [ANCHURA_LADRILLO,ALTURA_LADRILLO], 16, [0]);
+    this.sprite = new Sprite(SPRITES, coords[color], [ANCHURA_LADRILLO,ALTURA_LADRILLO], 16, [0]);
 }
 
 Brick.prototype = {
@@ -168,15 +178,15 @@ var calcDistanceToMove = function(delta, speed) {
 };
 
 
-function Ball(x, y, angle, v, diameter, sticky) {
+function Ball(x, y, angle, v, diameter) {
 
     // atributos
     this.x = x;
     this.y = y;
     this.angle = angle;
     this.speed = v;
+    this.initialSpeed = v; // this never changes
     this.radius = diameter/2;
-    this.sticky = sticky;
 
     this.draw = function(ctx) {
         ctx.restore();
@@ -196,18 +206,22 @@ function Ball(x, y, angle, v, diameter, sticky) {
             this.x = x;
             this.y = y;
         }
-        if (this.sticky === false) {
-            incX = this.speed * Math.cos(this.angle);
-            incY = this.speed * Math.sin(this.angle);
-            this.x = this.x + calcDistanceToMove(delta, incX);
-            if (this.y > 0) {
-                this.y = this.y - calcDistanceToMove(delta, incY);
-            }
-        }
-    };
 
-    this.setSticky = function(value){
-        this.sticky = value;
+        incX = this.speed * Math.cos(this.angle);
+        incY = this.speed * Math.sin(this.angle);
+        this.x = this.x + calcDistanceToMove(delta, incX);
+        if (this.y > 0) {
+            this.y = this.y - calcDistanceToMove(delta, incY);
+        }
+
+    };
+    
+    this.stop = function() {
+        this.speed = 0;
+    }
+    
+    this.play = function() {
+        this.speed = this.initialSpeed;
     }
 
 }
@@ -216,10 +230,10 @@ function Bonus() {
     this.type = "L";
     this.x = 50;
     this.y = 50;
-    this.width = 16;
-    this.height = 8;
-    this.speed = 20;
-    this.sprite =  new Sprite('img/sprites.png', [288,0], [16,8], 0.008, [0,1,2,3,4,5,6,7]);
+    this.width = 44;
+    this.height = 22;
+    this.speed = 80;                    // XY   w,h     DELTA   FRAMES
+    this.sprite =  new Sprite(SPRITES, [0,47], [44,22], 0.008, [0,1,2,3,4,5,6,7]);
 }
 Bonus.prototype = {
     draw : function(ctx) {
@@ -259,69 +273,72 @@ var GF = function() {
       	left: false,
         right: false,
         space: false,
-        shift: false
+        shift: false,
+        pause: false
   };
 
     var paddle = {
         dead: true,
-        x: 10,
-        y: 130,
-        width: 32,
-        height: 8,
+        x: 100,
+        y: 530,
+        width: 88,
+        height: 22,
         speed: 300,     // pixels/s
-        sticky: false,  // path/2/sprite        x,y      h,w   delta  frameNumbers
-        sprite: new Sprite('img/sprites.png', [224,32], [32,8], 16, [0,1,2,3,2,1])
+        //           x,y    w, h  delta frameNumbers
+        sprite: new Sprite(SPRITES, [0,0], [88,22], 16, [0,1])
     };
 
   var ladrillos = [
     // grey - 13 bricks each row
-    {x: 11, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO), y: 20, c: 'grey'},
-    {x: (11+ANCHURA_LADRILLO)+16, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 20, c: 'grey'},
-    {x: (11+ANCHURA_LADRILLO)+16*3, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 20, c: 'grey'},
-    {x: (11+ANCHURA_LADRILLO)+16*5, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 20, c: 'grey'},
-    {x: (11+ANCHURA_LADRILLO)+16*7, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 20, c: 'grey'},
-    {x: (11+ANCHURA_LADRILLO)+16*9, y: 20, c: 'grey'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 20, c: 'grey'},
-    {x: (11+ANCHURA_LADRILLO)+16*11, y: 20, c: 'grey'},
+    // 20 pixels of horizonal separation // starting at x=50
+    // 25 pixels of vertical separation // starting at y=25
+    {x: 50, y: 25, c: 'grey'},{x: 50+(ANCHURA_LADRILLO+20)*1, y: 25, c: 'grey'},
+    {x: 50+(ANCHURA_LADRILLO+20)*2, y: 25, c: 'grey'}, {x: 50+(ANCHURA_LADRILLO+20)*3, y: 25, c: 'grey'},
+    {x: 50+(ANCHURA_LADRILLO+20)*4, y: 25, c: 'grey'}, {x: 50+(ANCHURA_LADRILLO+20)*5, y: 25, c: 'grey'},
+    {x: 50+(ANCHURA_LADRILLO+20)*6, y: 25, c: 'grey'}, {x: 50+(ANCHURA_LADRILLO+20)*7, y: 25, c: 'grey'},
+    {x: 50+(ANCHURA_LADRILLO+20)*8, y: 25, c: 'grey'}, {x: 50+(ANCHURA_LADRILLO+20)*9, y: 25, c: 'grey'},
+    {x: 50+(ANCHURA_LADRILLO+20)*10, y: 25, c: 'grey'}, {x: 50+(ANCHURA_LADRILLO+20)*11, y: 25, c: 'grey'},
+    {x: 50+(ANCHURA_LADRILLO+20)*12, y: 25, c: 'grey'},
     // red
-    {x: 11, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO), y: 28, c: 'red'},
-    {x: (11+ANCHURA_LADRILLO)+16, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 28, c: 'red'},
-    {x: (11+ANCHURA_LADRILLO)+16*3, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 28, c: 'red'},
-    {x: (11+ANCHURA_LADRILLO)+16*5, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 28, c: 'red'},
-    {x: (11+ANCHURA_LADRILLO)+16*7, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 28, c: 'red'},
-    {x: (11+ANCHURA_LADRILLO)+16*9, y: 28, c: 'red'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 28, c: 'red'},
-    {x: (11+ANCHURA_LADRILLO)+16*11, y: 28, c: 'red'},
+    {x: 50, y:  25+(ALTURA_LADRILLO+25), c: 'red'}, {x: 50+(ANCHURA_LADRILLO+20)*1, y:  25+(ALTURA_LADRILLO+25), c: 'red'},
+    {x: 50+(ANCHURA_LADRILLO+20)*2, y:  25+(ALTURA_LADRILLO+25), c: 'red'}, {x: 50+(ANCHURA_LADRILLO+20)*3, y:  25+(ALTURA_LADRILLO+25), c: 'red'},
+    {x: 50+(ANCHURA_LADRILLO+20)*4 , y:  25+(ALTURA_LADRILLO+25), c: 'red'}, {x: 50+(ANCHURA_LADRILLO+20)*5, y:  25+(ALTURA_LADRILLO+25), c: 'red'},
+    {x: 50+(ANCHURA_LADRILLO+20)*6, y:  25+(ALTURA_LADRILLO+25), c: 'red'}, {x: 50+(ANCHURA_LADRILLO+20)*7, y:  25+(ALTURA_LADRILLO+25), c: 'red'},
+    {x: 50+(ANCHURA_LADRILLO+20)*8, y:  25+(ALTURA_LADRILLO+25), c: 'red'}, {x: 50+(ANCHURA_LADRILLO+20)*9, y:  25+(ALTURA_LADRILLO+25), c: 'red'},
+    {x: 50+(ANCHURA_LADRILLO+20)*10, y:  25+(ALTURA_LADRILLO+25), c: 'red'}, {x: 50+(ANCHURA_LADRILLO+20)*11, y:  25+(ALTURA_LADRILLO+25), c: 'red'},
+    {x: 50+(ANCHURA_LADRILLO+20)*12, y:  25+(ALTURA_LADRILLO+25), c: 'red'},
     // yellow
-    {x: 11, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO), y: 36, c: 'yellow'},
-    {x: (11+ANCHURA_LADRILLO)+16, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 36, c: 'yellow'},
-    {x: (11+ANCHURA_LADRILLO)+16*3, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 36, c: 'yellow'},
-    {x: (11+ANCHURA_LADRILLO)+16*5, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 36, c: 'yellow'},
-    {x: (11+ANCHURA_LADRILLO)+16*7, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 36, c: 'yellow'},
-    {x: (11+ANCHURA_LADRILLO)+16*9, y: 36, c: 'yellow'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 36, c: 'yellow'},
-    {x: (11+ANCHURA_LADRILLO)+16*11, y: 36, c: 'yellow'},
-    // blue
-    {x: 11, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO), y: 44, c: 'blue'},
-    {x: (11+ANCHURA_LADRILLO)+16, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 44, c: 'blue'},
-    {x: (11+ANCHURA_LADRILLO)+16*3, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 44, c: 'blue'},
-    {x: (11+ANCHURA_LADRILLO)+16*5, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 44, c: 'blue'},
-    {x: (11+ANCHURA_LADRILLO)+16*7, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 44, c: 'blue'},
-    {x: (11+ANCHURA_LADRILLO)+16*9, y: 44, c: 'blue'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 44, c: 'blue'},
-    {x: (11+ANCHURA_LADRILLO)+16*11, y: 44, c: 'blue'},
-    // pink
-    {x: 11, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO), y: 52, c: 'pink'},
-    {x: (11+ANCHURA_LADRILLO)+16, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 52, c: 'pink'},
-    {x: (11+ANCHURA_LADRILLO)+16*3, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 52, c: 'pink'},
-    {x: (11+ANCHURA_LADRILLO)+16*5, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 52, c: 'pink'},
-    {x: (11+ANCHURA_LADRILLO)+16*7, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 52, c: 'pink'},
-    {x: (11+ANCHURA_LADRILLO)+16*9, y: 52, c: 'pink'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 52, c: 'pink'},
-    {x: (11+ANCHURA_LADRILLO)+16*11, y: 52, c: 'pink'},
-    // green
-    {x: 11, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO), y: 60, c: 'green'},
-    {x: (11+ANCHURA_LADRILLO)+16, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*2, y: 60, c: 'green'},
-    {x: (11+ANCHURA_LADRILLO)+16*3, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*4, y: 60, c: 'green'},
-    {x: (11+ANCHURA_LADRILLO)+16*5, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*6, y: 60, c: 'green'},
-    {x: (11+ANCHURA_LADRILLO)+16*7, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*8, y: 60, c: 'green'},
-    {x: (11+ANCHURA_LADRILLO)+16*9, y: 60, c: 'green'}, {x: (11+ANCHURA_LADRILLO)+16*10, y: 60, c: 'green'},
-    {x: (11+ANCHURA_LADRILLO)+16*11, y: 60, c: 'green'}
+    {x: 50, y: 25+(ALTURA_LADRILLO+25)*2, c: 'yellow'}, {x: 50+(ANCHURA_LADRILLO+20)*1, y: 25+(ALTURA_LADRILLO+25)*2, c: 'yellow'},
+    {x: 50+(ANCHURA_LADRILLO+20)*2, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'}, {x: 50+(ANCHURA_LADRILLO+20)*3, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'},
+    {x: 50+(ANCHURA_LADRILLO+20)*4 , y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'}, {x: 50+(ANCHURA_LADRILLO+20)*5, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'},
+    {x: 50+(ANCHURA_LADRILLO+20)*6, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'}, {x: 50+(ANCHURA_LADRILLO+20)*7, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'},
+    {x: 50+(ANCHURA_LADRILLO+20)*8, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'}, {x: 50+(ANCHURA_LADRILLO+20)*9, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'},
+    {x: 50+(ANCHURA_LADRILLO+20)*10, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'}, {x: 50+(ANCHURA_LADRILLO+20)*11, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'},
+    {x: 50+(ANCHURA_LADRILLO+20)*12, y:  25+(ALTURA_LADRILLO+25)*2, c: 'yellow'},
+    // // blue
+    {x: 50, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'}, {x: 50+(ANCHURA_LADRILLO+20)*1, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'},
+    {x: 50+(ANCHURA_LADRILLO+20)*2, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'}, {x: 50+(ANCHURA_LADRILLO+20)*3, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'},
+    {x: 50+(ANCHURA_LADRILLO+20)*4 , y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'}, {x: 50+(ANCHURA_LADRILLO+20)*5, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'},
+    {x: 50+(ANCHURA_LADRILLO+20)*6, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'}, {x: 50+(ANCHURA_LADRILLO+20)*7, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'},
+    {x: 50+(ANCHURA_LADRILLO+20)*8, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'}, {x: 50+(ANCHURA_LADRILLO+20)*9, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'},
+    {x: 50+(ANCHURA_LADRILLO+20)*10, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'}, {x: 50+(ANCHURA_LADRILLO+20)*11, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'},
+    {x: 50+(ANCHURA_LADRILLO+20)*12, y:  25+(ALTURA_LADRILLO+25)*3, c: 'blue'},
+    // // pink
+    {x: 50, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'}, {x: 50+(ANCHURA_LADRILLO+20)*1, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'},
+    {x: 50+(ANCHURA_LADRILLO+20)*2, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'}, {x: 50+(ANCHURA_LADRILLO+20)*3, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'},
+    {x: 50+(ANCHURA_LADRILLO+20)*4 , y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'}, {x: 50+(ANCHURA_LADRILLO+20)*5, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'},
+    {x: 50+(ANCHURA_LADRILLO+20)*6, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'}, {x: 50+(ANCHURA_LADRILLO+20)*7, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'},
+    {x: 50+(ANCHURA_LADRILLO+20)*8, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'}, {x: 50+(ANCHURA_LADRILLO+20)*9, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'},
+    {x: 50+(ANCHURA_LADRILLO+20)*10, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'}, {x: 50+(ANCHURA_LADRILLO+20)*11, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'},
+    {x: 50+(ANCHURA_LADRILLO+20)*12, y: 25+(ALTURA_LADRILLO+25)*4, c: 'pink'},
+    // // green
+    {x: 50, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'}, {x: 50+(ANCHURA_LADRILLO+20)*1, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'},
+    {x: 50+(ANCHURA_LADRILLO+20)*2, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'}, {x: 50+(ANCHURA_LADRILLO+20)*3, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'},
+    {x: 50+(ANCHURA_LADRILLO+20)*4 , y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'}, {x: 50+(ANCHURA_LADRILLO+20)*5, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'},
+    {x: 50+(ANCHURA_LADRILLO+20)*6, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'}, {x: 50+(ANCHURA_LADRILLO+20)*7, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'},
+    {x: 50+(ANCHURA_LADRILLO+20)*8, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'}, {x: 50+(ANCHURA_LADRILLO+20)*9, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'},
+    {x: 50+(ANCHURA_LADRILLO+20)*10, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'}, {x: 50+(ANCHURA_LADRILLO+20)*11, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'},
+    {x: 50+(ANCHURA_LADRILLO+20)*12, y: 25+(ALTURA_LADRILLO+25)*5, c: 'green'}
   ];
 
 
@@ -419,15 +436,15 @@ var GF = function() {
 
 function displayLifes() {
     ctx.restore();
-    ctx.font = "12px Open Sans";
+    ctx.font = "18px Open Sans";
     ctx.fillStyle = "red";
-    ctx.fillText("Lifes: " + lifes,w-45, 15);
+    ctx.fillText("Lifes: " + lifes,w-80, 20);
     ctx.save();
 }
 
 function displayMsg(msg, x, y, color) {
     ctx.restore();
-    ctx.font = "12px Open Sans";
+    ctx.font = "24px Open Sans";
     ctx.fillStyle = color;
     ctx.fillText(msg, x, y);
     ctx.save();
@@ -466,9 +483,23 @@ function displayMsg(msg, x, y, color) {
         if (inputStates.space) {
             // disparar o sacar la bola
              for (var i = balls.length - 1; i >= 0; i--) {
-                 balls[i].setSticky(false);
-                 gameStates.gameRunning = true;
+                 balls[i].play();
              }
+             gameStates.gameRunning = true;
+        }
+        
+        if (inputStates.pause) {
+            if (gameStates.gameRunning) {
+                for (var i = balls.length - 1; i >= 0; i--) {
+                    balls[i].stop();
+                }
+                gameStates.gameRunning = false;
+            } else {
+                for (var i = balls.length - 1; i >= 0; i--) {
+                    balls[i].play();
+                }
+                gameStates.gameRunning = true;   
+            }
         }
   };
 
@@ -571,7 +602,7 @@ function displayMsg(msg, x, y, color) {
 
     if (!gameStates.gameRunning) {   // pause (game not running)
         if (!gameStates.gameOver) {
-            displayMsg("Press space button.", w/4, h*3/4, "white");
+            displayMsg("Press space button.", w/2.4, h*3/4, "white");
         } else {
             ctx.restore();
             ctx.fillStyle = "black";
@@ -629,7 +660,7 @@ function displayMsg(msg, x, y, color) {
     };
 
     var initTerrain = function(){
-        var terrain = new Sprite('img/sprites.png', [0, 80], [24, 32]);
+        var terrain = new Sprite(SPRITES, [0, 71], [24, 32]);
         terrainPattern = ctx.createPattern(terrain.image(),'repeat');
     };
 
@@ -640,7 +671,7 @@ function displayMsg(msg, x, y, color) {
         // start keyboard listeners
         inicializarGestorTeclado(inputStates);
         // start loading sprites
-        resources.load(['img/sprites.png']);
+        resources.load([SPRITES]);
         // when ready jump to init function.
         resources.onReady(loadAssets);
     };
