@@ -84,17 +84,8 @@ wsServer.on('request', function(request) {
                 console.log((new Date()) + ' User is known as: ' + userName
                             + ' with ' + userColor + ' color.');
 
-            } else { // log and broadcast the message
-                
-                // first word in the message
-                var firstWord = message.utf8Data.split(' ')[0];
-                // if the first word in the message is the command /nick
-                if (firstWord === "/nick") {
-                    // change its userName, and display it to the users
-                    userName = message.utf8Data.split(' ')[1];
-                    console.log
-                }
-                
+            } else {                
+                 // log and broadcast the message
                 console.log((new Date()) + ' Received Message from '
                             + userName + ': ' + message.utf8Data);
                 
@@ -108,11 +99,33 @@ wsServer.on('request', function(request) {
                 history.push(obj);
                 history = history.slice(-100);
 
-                // broadcast message to all connected clients
-                var json = JSON.stringify({ type:'message', data: obj });
-                for (var i=0; i < clients.length; i++) {
-                    clients[i].sendUTF(json);
+                // if a command is send
+                var temp = message.utf8Data;
+                var json;
+                if (temp.startsWith('/nick')) {
+                    
+                    // change object nodes for the new information
+                    obj.text = htmlEntities('Nuevo nick de '+userName+' es '+temp.slice(6, temp.length));
+                    userName = temp.slice(6, temp.length);
+                    obj.author = userName;
+                    userColor = colors.shift();
+                    obj.color = userColor;
+                    
+                    // broadcast message to all connected clients
+                    json = JSON.stringify({ type:'userchange', data: obj });
+                    for (var i=0; i < clients.length; i++) {
+                        clients[i].sendUTF(json);
+                    }
+                } else {
+                    
+                    // broadcast message to all connected clients
+                    json = JSON.stringify({ type:'message', data: obj });
+                    for (var i=0; i < clients.length; i++) {
+                        clients[i].sendUTF(json);
+                    }    
                 }
+
+                
             }
         }
     });

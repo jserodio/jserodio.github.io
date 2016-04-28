@@ -49,27 +49,36 @@ $(function () {
             console.log('This doesn\'t look like a valid JSON: ', message.data);
             return;
         }
-
-        // NOTE: if you're not sure about the JSON structure
-        // check the server source code above
-        if (json.type === 'color') { // first response from the server with user's color
-            myColor = json.data;
-            status.text(myName + ': ').css('color', myColor);
-            input.removeAttr('disabled').focus();
-            // from now user can start sending messages
-        } else if (json.type === 'history') { // entire message history
-            // insert every single message to the chat window
-            for (var i=0; i < json.data.length; i++) {
-                addMessage(json.data[i].author, json.data[i].text,
-                           json.data[i].color, new Date(json.data[i].time));
-            }
-        } else if (json.type === 'message') { // it's a single message
-            input.removeAttr('disabled'); // let the user write another message
-            addMessage(json.data.author, json.data.text,
-                       json.data.color, new Date(json.data.time));
-        } else {
-            console.log('Hmm..., I\'ve never seen JSON like this: ', json);
+        
+        
+        switch (json.type) {
+            case 'color': // first response from the server with user's color
+                myColor = json.data;
+                status.text(myName + ': ').css('color', myColor);
+                input.removeAttr('disabled').focus();  
+            break;
+            case 'history':
+                for (var i=0; i < json.data.length; i++) {
+                    addMessage(json.data[i].author, json.data[i].text,
+                    json.data[i].color, new Date(json.data[i].time));
+                }
+            break;
+            case 'message':
+                input.removeAttr('disabled'); // let the user write another message
+                addMessage(json.data.author, json.data.text,
+                json.data.color, new Date(json.data.time));
+            break;
+            case 'userchange':
+                input.removeAttr('disabled'); // let the user write another message
+                addMessage(json.data.author, json.data.text,
+                json.data.color, new Date(json.data.time));
+                status.text(json.data.author + ': ').css('color', json.data.color);
+            break;
+            default:
+                 console.log('Hmm..., I\'ve never seen JSON like this: ', json);
+            break;
         }
+
     };
 
     /**
