@@ -121,9 +121,14 @@ $(function () {
      * Add message to the chat window
      */
     function addMessage(author, message, color, dt) {
-        content.prepend('<p><span style="color:' + color + '">' + author + '</span> @ ' +
+        content.append('<p><span style="color:' + color + '">' + author + '</span> @ ' +
              + (dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()) + ':'
              + (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes())
              + ': ' + message + '</p>');
+        // scroll down with each message received 
+        var scrollTo = $("p:last-child");
+        content.animate({
+            scrollTop: scrollTo.offset().top - content.offset().top + content.scrollTop()
+        }, 4);
     }
 });
