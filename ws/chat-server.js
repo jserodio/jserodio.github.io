@@ -85,6 +85,16 @@ wsServer.on('request', function(request) {
                             + ' with ' + userColor + ' color.');
 
             } else { // log and broadcast the message
+                
+                // first word in the message
+                var firstWord = message.utf8Data.split(' ')[0];
+                // if the first word in the message is the command /nick
+                if (firstWord === "/nick") {
+                    // change its userName, and display it to the users
+                    userName = message.utf8Data.split(' ')[1];
+                    console.log
+                }
+                
                 console.log((new Date()) + ' Received Message from '
                             + userName + ': ' + message.utf8Data);
                 
