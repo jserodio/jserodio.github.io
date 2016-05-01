@@ -64,12 +64,12 @@ $(function () {
                 }
             break;
             case 'message':
-                input.removeAttr('disabled'); // let the user write another message
+                input.removeAttr('disabled').focus(); // let the user write another message
                 addMessage(json.data.author, json.data.text,
                 json.data.color, new Date(json.data.time));
             break;
             case 'userchange':
-                input.removeAttr('disabled'); // let the user write another message
+                input.removeAttr('disabled').focus(); // let the user write another message
                 addMessage(json.data.author, json.data.text,
                 json.data.color, new Date(json.data.time));
                 status.text(json.data.author + ': ').css('color', json.data.color);
