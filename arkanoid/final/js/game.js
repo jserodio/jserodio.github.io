@@ -9,13 +9,18 @@ var ANCHURA_LADRILLO = 42,
   	ALTURA_LADRILLO = 20;
 var SPRITES = 'img/bigsprites.png';
 var graphics = "high";
+var audio = "on";
 var music;
 var sound;
 
+var ieedge = /MSIE 10/i.test(navigator.userAgent) || /MSIE 9/i.test(navigator.userAgent) || /rv:11.0/i.test(navigator.userAgent) || /Edge\/12./i.test(navigator.userAgent);
 
-if (/MSIE 10/i.test(navigator.userAgent) || /MSIE 9/i.test(navigator.userAgent) || /rv:11.0/i.test(navigator.userAgent) || /Edge\/12./i.test(navigator.userAgent)) {
+if (ieedge) {
    // if internet explorer 9, 10, 11 or MS-Edge.
    graphics = "low";
+   audio = "off";
+   document.getElementById("volumen").value = 0;
+   document.getElementById("volumen").disabled = true;
 }
 
 function cambiarVolumen() {
@@ -76,7 +81,9 @@ function inicializarGestorTeclado(inputStates) {
         }
         if (e.keyCode === 71 || e.keyCode === 103) {
             // graphics (G/g)
-            inputStates.graphics = true;
+            if (!ieedge) {
+                inputStates.graphics = true;    
+            }
         }
     }
 }
@@ -447,7 +454,11 @@ var GF = function() {
             }
             ball.speed += 2;
             bricks.splice(i, 1);
-            sound.play('brickhit');
+            
+            if (audio === "on") {
+                sound.play('brickhit');    
+            }
+            
             // bonus
 
             }
@@ -582,7 +593,10 @@ function pause(gameStates, balls) {
                     gameStates.gameOver = true;
                 }
             }
-            sound.play('die');
+            
+            if (audio === "on") {
+                sound.play('die');
+            }
         }
 
         bricksLeft = testBrickCollision(ball);
@@ -610,7 +624,10 @@ function pause(gameStates, balls) {
             } else if (inputStates.left) {
                 ball.angle *= (ball.angle > 0 ? 1 : 1.5);
             }
-            sound.play('vaushit');
+            
+            if (audio === "on") {
+                sound.play('vaushit');
+            }
         }
         ball.draw(ctx);
       }
@@ -680,27 +697,30 @@ function pause(gameStates, balls) {
   };
 
     var loadAssets = function() {
-        // load sound using howler.js
-        music = new Howl({
-            urls: ['assets/Game_Start.ogg'],
-            volume: 0.2,
-            onload: function() {
-                sound = new Howl({
-                    urls: ['assets/sounds.mp3'],
-                    volume: 0.2,
-                    buffer: true,
-                    sprite: {
-                        die: [1120, 1010],      // 1.120 start, 1.010 duration
-                        laser: [12485, 290],    // 12.485 start, 0.290 duration
-                        vaushit: [16816, 770],  // 16.816 start, 0.770 duration
-                        brickhit: [18616, 770]  // 18.616 start, 0.770 duration
-                    },
-                    onload: function() {
-                        init(); // when every music or sound is loaded
-                    }
-                });
-            }
-        });
+        if (audio === "on") {
+            music = new Howl({
+                urls: ['assets/Game_Start.ogg'],
+                volume: 0.2,
+                onload: function() {
+                    sound = new Howl({
+                        urls: ['assets/sounds.mp3'],
+                        volume: 0.2,
+                        buffer: true,
+                        sprite: {
+                            die: [1120, 1010],      // 1.120 start, 1.010 duration
+                            laser: [12485, 290],    // 12.485 start, 0.290 duration
+                            vaushit: [16816, 770],  // 16.816 start, 0.770 duration
+                            brickhit: [18616, 770]  // 18.616 start, 0.770 duration
+                        },
+                        onload: function() {
+                            init(); // when every music or sound is loaded    
+                        }
+                    });
+                }
+            });    
+        } else {
+            init();
+        }
     };
 
     var init = function() {
@@ -717,7 +737,9 @@ function pause(gameStates, balls) {
         // add bonus
         bonuses.push(new Bonus());
         // play initial music
-        music.play();
+        if (audio === "on") {
+            music.play();   
+        }
     };
 
     var initTerrain = function(){
