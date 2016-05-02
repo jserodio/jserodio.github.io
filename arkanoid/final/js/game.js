@@ -161,6 +161,7 @@ function Brick(x,y,color) {
     // Atributos
     this.x = x;
     this.y = y;
+    this.color = color;
     var coords = {
         "red"   :   [0,25], // red
         "pink"  :   [44,25], // pink
@@ -169,15 +170,20 @@ function Brick(x,y,color) {
         "yellow":   [176,25], // yellow
         "grey"  :   [220,25]  // silver
     };
-    this.sprite = new Sprite(SPRITES, coords[color], [ANCHURA_LADRILLO,ALTURA_LADRILLO], 16, [0]);
+    this.sprite = new Sprite(SPRITES, coords[this.color], [ANCHURA_LADRILLO,ALTURA_LADRILLO], 16, [0]);
 }
 
 Brick.prototype = {
     draw : function(ctx) {
         ctx.restore();
-        ctx.translate(this.x,this.y);
-        this.sprite.render(ctx);
-        ctx.resetTransform();
+        if (graphics === "high") {
+            ctx.translate(this.x,this.y);
+            this.sprite.render(ctx);
+            ctx.resetTransform();   
+        } else {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, ANCHURA_LADRILLO, ALTURA_LADRILLO);
+        }
         ctx.save();
 	}
 };
@@ -251,8 +257,13 @@ function Bonus() {
 Bonus.prototype = {
     draw : function(ctx) {
         ctx.save();
-        ctx.translate(this.x, this.y);
-        this.sprite.render(ctx);
+        if (graphics === "high") {
+            ctx.translate(this.x, this.y);
+            this.sprite.render(ctx);
+        } else {
+            ctx.fillStyle = "red";
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
         ctx.restore();
     },
     move : function() {
@@ -402,7 +413,7 @@ var GF = function() {
     if (graphics === "high") {
         ctx.fillStyle = terrainPattern;    
     } else {
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = "Navy";
     }
     
     ctx.fillRect(0, 0, w, h);
@@ -449,9 +460,14 @@ var GF = function() {
   function drawVaus(x, y) {
         // Función para pintar la raqueta Vaus
         ctx.restore();
-        ctx.translate(x,y);
-        paddle.sprite.render(ctx);
-        ctx.resetTransform();
+        if (graphics === "high") {
+            ctx.translate(x,y);
+            paddle.sprite.render(ctx);
+            ctx.resetTransform();    
+        } else {
+            ctx.fillStyle = "black";
+            ctx.fillRect(x, y, paddle.width, paddle.height);
+        }
         ctx.save();
   }
 
