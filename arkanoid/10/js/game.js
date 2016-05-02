@@ -51,8 +51,8 @@ function inicializarGestorTeclado(inputStates) {
             inputStates.right = false;
         }
         if (e.keyCode === 32) {
-            inputStates.pause = true;
             inputStates.space = true;
+            inputStates.pause = true;
             blur();
         }
         if (e.keyCode === 16) {
@@ -462,18 +462,29 @@ function blur() {
 }
 
 function pause(gameStates, balls) {
-    if (gameStates.gameRunning) {
-        console.log("pausing game");
-        for (var i = balls.length - 1; i >= 0; i--) {
-                balls[i].stop();
-            }
-        gameStates.gameRunning = false;
+    if (inputStates.space) {
+        if (!gameStates.gameRunning) {
+            console.log("resume game");
+            for (var i = balls.length - 1; i >= 0; i--) {
+                    balls[i].play();
+                }
+            gameStates.gameRunning = true;
+        }
+        inputStates.space = false;
     } else {
-        console.log("resume game");
-        for (var i = balls.length - 1; i >= 0; i--) {
-                balls[i].play();
-            }
-        gameStates.gameRunning = true;
+        if (gameStates.gameRunning) {
+            console.log("pausing game");
+            for (var i = balls.length - 1; i >= 0; i--) {
+                    balls[i].stop();
+                }
+            gameStates.gameRunning = false;
+        } else {
+            console.log("resume game");
+            for (var i = balls.length - 1; i >= 0; i--) {
+                    balls[i].play();
+                }
+            gameStates.gameRunning = true;
+        }   
     }
     inputStates.pause = false;
 }
@@ -622,6 +633,7 @@ function pause(gameStates, balls) {
             ctx.fillRect(0, 0, w, h);
             ctx.save();
             displayMsg("Game Over.", w/2.2, h/2+10, "white");
+            return 0;
         } else {
             displayMsg("Press space button.", w/2.4, h*3/4, "white");
         }
