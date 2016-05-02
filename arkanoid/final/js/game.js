@@ -13,7 +13,7 @@ var audio = "on";
 var music;
 var sound;
 
-var ieedge = /MSIE 10/i.test(navigator.userAgent) || /MSIE 9/i.test(navigator.userAgent) || /rv:11.0/i.test(navigator.userAgent) || /Edge\/12./i.test(navigator.userAgent);
+var ieedge = /MSIE 10/i.test(navigator.userAgent) || /MSIE 9/i.test(navigator.userAgent) || /rv:11.0/i.test(navigator.userAgent) || /Edge\/\d+/i.test(navigator.userAgent);
 
 if (ieedge) {
    // if internet explorer 9, 10, 11 or MS-Edge.
