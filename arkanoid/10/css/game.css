@@ -21,3 +21,7 @@
 figcaption {
     font-size: small;
 }
+.blur {
+    -webkit-filter: blur(5px); /* Chrome, Safari, Opera */
+    filter:blur(5px);
+}

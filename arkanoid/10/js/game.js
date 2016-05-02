@@ -32,7 +32,6 @@ function inicializarGestorTeclado(inputStates) {
         }
         if (e.keyCode === 32) {
             // disparo
-            inputStates.space = true;
         }
         if (e.keyCode === 16) {
             // moverse con precision (lento)
@@ -40,7 +39,6 @@ function inicializarGestorTeclado(inputStates) {
         }
         if (e.keyCode === 80 || e.keyCode === 112) {
             // pause
-
         }
     };
 
@@ -53,18 +51,16 @@ function inicializarGestorTeclado(inputStates) {
             inputStates.right = false;
         }
         if (e.keyCode === 32) {
-            inputStates.space = false;
+            inputStates.pause = true;
+            inputStates.space = true;
+            blur();
         }
         if (e.keyCode === 16) {
             inputStates.shift = false;
         }
         if (e.keyCode === 80 || e.keyCode === 112) {
-            //inputStates.pause = false;
-            if (inputStates.pause) {
-                inputStates.pause = false;    
-            } else {
-                inputStates.pause = true;   
-            }
+            inputStates.pause = true;   
+            blur();
         }
     }
 }
@@ -284,10 +280,10 @@ var GF = function() {
     var paddle = {
         dead: true,
         x: 100,
-        y: 530,
+        y: 450,
         width: 88,
         height: 22,
-        speed: 300,     // pixels/s
+        speed: 340,     // pixels/s
         //           x,y    w, h  delta frameNumbers
         sprite: new Sprite(SPRITES, [0,0], [88,22], 16, [0,1])
     };
@@ -454,6 +450,34 @@ function displayMsg(msg, x, y, color) {
     ctx.save();
 }
 
+function blur() {
+    // funcion tipo toggle con css3
+    if (!document.getElementById('canvas').classList.contains('blur')) {
+        // aplicar filtro css3 blur :)
+        document.getElementById('canvas').classList.add('blur');
+    } else {
+        // eliminar el filtro
+        document.getElementById('canvas').classList.remove('blur');
+    }
+}
+
+function pause(gameStates, balls) {
+    if (gameStates.gameRunning) {
+        console.log("pausing game");
+        for (var i = balls.length - 1; i >= 0; i--) {
+                balls[i].stop();
+            }
+        gameStates.gameRunning = false;
+    } else {
+        console.log("resume game");
+        for (var i = balls.length - 1; i >= 0; i--) {
+                balls[i].play();
+            }
+        gameStates.gameRunning = true;
+    }
+    inputStates.pause = false;
+}
+
   var updatePaddlePosition = function() {
         // update sprite
         paddle.sprite.update(delta);
@@ -485,28 +509,11 @@ function displayMsg(msg, x, y, color) {
         }
 
         if (inputStates.space) {
-            // disparar o sacar la bola
-             for (var i = balls.length - 1; i >= 0; i--) {
-                 balls[i].play();
-             }
-             gameStates.gameRunning = true;
+            // disparo
         }
         
         if (inputStates.pause) {
-
-            if (gameStates.gameRunning) {
-                console.log("pausing game");
-                for (var i = balls.length - 1; i >= 0; i--) {
-                        balls[i].stop();
-                    }
-                gameStates.gameRunning = false;   
-            } else {
-                console.log("playing game.");
-                for (var i = balls.length - 1; i >= 0; i--) {
-                    balls[i].play();
-                }
-                gameStates.gameRunning = true;
-            }  
+            pause(gameStates, balls);
         }
 
   };
@@ -609,16 +616,15 @@ function displayMsg(msg, x, y, color) {
     }
 
     if (!gameStates.gameRunning) {   // pause (game not running)
-        if (!gameStates.gameOver) {
-            displayMsg("Press space button.", w/2.4, h*3/4, "white");
-        } else {
+        if (gameStates.gameOver) {
             ctx.restore();
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, w, h);
             ctx.save();
             displayMsg("Game Over.", w/2.2, h/2+10, "white");
+        } else {
+            displayMsg("Press space button.", w/2.4, h*3/4, "white");
         }
-
     }
 
     // call the animation loop every 1/60th of second
@@ -668,8 +674,10 @@ function displayMsg(msg, x, y, color) {
     };
 
     var initTerrain = function(){
+        ctx.restore();
         var terrain = new Sprite(SPRITES, [0, 71], [24, 32]);
         terrainPattern = ctx.createPattern(terrain.image(),'repeat');
+        ctx.save();
     };
 
     var start = function() {
