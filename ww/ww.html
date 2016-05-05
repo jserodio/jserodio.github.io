@@ -1,51 +1,15 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"> </head>
+<head>
+	<meta charset="utf-8">
+	<title>Web Workers</title>
+</head>
 <body>
-<script>
-	
-var reloj ;
-
-window.onload = function() {
- 	var num = 2227644437; 
-
-	var botonMostrar = document.getElementById("mostrar");
-	botonMostrar.onclick = function() {
-		reloj = setInterval(mostrar,100);		
-	};
-
-	var botonCalcular = document.getElementById("calcular");
-	botonCalcular.onclick = function() { esPrimo(num) };
-
-
-}
-
-function mostrar() {
-	var salida = document.getElementById("salida");
-	salida.innerHTML = salida.innerHTML + " #";
-}
-
-function esPrimo(n) {
-	var i = 2;
-	if (n == 2) return true;
-	for (; i < n; ++i) {
-		if (n % i == 0) {
-			document.getElementById("salida").innerHTML += i;
-		       	return false;
-		}
-		// console.log("Calculando " + i);
-	}
- 	clearInterval(reloj);	
-	document.getElementById("salida").innerHTML += i;
-	return true;
-}
-
-</script>
 <div id="salida"></div>
 <form>
 	<input type="button" id="calcular" value="calcular">
 	<input type="button" id="mostrar" value="mostrar">
 </form>
-
+<script src="ww.js"></script>
 </body>
 </html>
