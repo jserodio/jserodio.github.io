@@ -77,12 +77,12 @@ function inicializarGestorTeclado(inputStates) {
         }
         if (e.keyCode === 80 || e.keyCode === 112) {
             // pause
-            inputStates.pause = true;   
+            inputStates.pause = true;
         }
         if (e.keyCode === 71 || e.keyCode === 103) {
             // graphics (G/g)
             if (!ieedge) {
-                inputStates.graphics = true;    
+                inputStates.graphics = true;
             }
         }
     }
@@ -186,7 +186,7 @@ Brick.prototype = {
         if (graphics === "high") {
             ctx.translate(this.x,this.y);
             this.sprite.render(ctx);
-            ctx.resetTransform();   
+            ctx.resetTransform();
         } else {
             ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, ANCHURA_LADRILLO, ALTURA_LADRILLO);
@@ -241,11 +241,11 @@ function Ball(x, y, angle, v, diameter) {
         }
 
     };
-    
+
     this.stop = function() {
         this.speed = 0;
     }
-    
+
     this.play = function() {
         this.speed = this.initialSpeed;
     }
@@ -293,7 +293,11 @@ var GF = function() {
   var bonuses = [];
   var bricksLeft;
 
-  var lifes = 3;
+  var lives = {
+    count: 3,
+    sprite: new Sprite(SPRITES, [178,0], [35,9], 16, [0])
+  }
+
   var gameStates = {
     gameRunning: false,
     gameOver: false
@@ -416,15 +420,15 @@ var GF = function() {
   // clears the canvas content
   function clearCanvas() {
     ctx.restore();
-    
+
     if (graphics === "high") {
-        ctx.fillStyle = terrainPattern;    
+        ctx.fillStyle = terrainPattern;
     } else {
         ctx.fillStyle = "Navy";
     }
-    
+
     ctx.fillRect(0, 0, w, h);
-    
+
     ctx.save();
   }
 
@@ -454,11 +458,11 @@ var GF = function() {
             }
             ball.speed += 2;
             bricks.splice(i, 1);
-            
+
             if (audio === "on") {
-                sound.play('brickhit');    
+                sound.play('brickhit');
             }
-            
+
             // bonus
 
             }
@@ -474,19 +478,43 @@ var GF = function() {
         if (graphics === "high") {
             ctx.translate(x,y);
             paddle.sprite.render(ctx);
-            ctx.resetTransform();    
+            ctx.resetTransform();
         } else {
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "white";
             ctx.fillRect(x, y, paddle.width, paddle.height);
         }
         ctx.save();
   }
 
-function displayLifes() {
+function displayLives() {
     ctx.restore();
-    ctx.font = "18px Open Sans";
-    ctx.fillStyle = "red";
-    ctx.fillText("Lifes: " + lifes,w-80, 20);
+    if (graphics === "high") {
+        ctx.font = "18px Open Sans";
+        ctx.fillStyle = "white";
+        ctx.fillText("Lives: ",w-200, h-10);
+
+        if (lives.count >= 1) {
+            ctx.translate(w-150,h-20);
+            lives.sprite.render(ctx);
+            ctx.resetTransform();
+        }
+        if (lives.count >= 2) {
+            ctx.translate(w-110,h-20);
+            lives.sprite.render(ctx);
+            ctx.resetTransform();
+        }
+
+        if (lives.count >= 3) {
+            ctx.translate(w-70,h-20);
+            lives.sprite.render(ctx);
+            ctx.resetTransform();
+        }
+
+    } else {
+        ctx.font = "18px Open Sans";
+        ctx.fillStyle = "white";
+        ctx.fillText("Lives: " + lives.count,w-110, h-10);
+    }
     ctx.save();
 }
 
@@ -522,7 +550,7 @@ function pause(gameStates, balls) {
                 }
             gameStates.gameRunning = true;
         }
-        blur();   
+        blur();
     }
     inputStates.pause = false;
 }
@@ -556,10 +584,10 @@ function pause(gameStates, balls) {
             // si pulsa derecha y no sobrepasa el limite derecho
             paddle.x = paddle.x + incX;
         }
-        
+
         if (inputStates.graphics) {
             if (graphics === "high") {
-                graphics = "low";    
+                graphics = "low";
             } else {
                 graphics = "high";
             }
@@ -569,7 +597,7 @@ function pause(gameStates, balls) {
         if (inputStates.space) {
             // disparo
         }
-        
+
         if (inputStates.pause) {
             pause(gameStates, balls);
         }
@@ -587,13 +615,13 @@ function pause(gameStates, balls) {
             balls.splice(i,1);
             if (balls.length === 0) {
                 paddle.dead = true;
-                lifes--;
+                lives.count--;
                 gameStates.gameRunning = false; // pause
-                if (lifes <= 0){
+                if (lives.count <= 0){
                     gameStates.gameOver = true;
                 }
             }
-            
+
             if (audio === "on") {
                 sound.play('die');
             }
@@ -624,7 +652,7 @@ function pause(gameStates, balls) {
             } else if (inputStates.left) {
                 ball.angle *= (ball.angle > 0 ? 1 : 1.5);
             }
-            
+
             if (audio === "on") {
                 sound.play('vaushit');
             }
@@ -671,7 +699,7 @@ function pause(gameStates, balls) {
     drawBricks();
 
     // dibujar HUD vidas
-    displayLifes();
+    displayLives();
 
     // gameStates.gameOver se actualiza en ctr+f -> die
     if (paddle.dead && !gameStates.gameOver) {
@@ -691,6 +719,15 @@ function pause(gameStates, balls) {
             displayMsg("Press space button.", w/2.6, h*3/4, "white");
         }
     }
+
+    if (bricksLeft <= 0) {
+        ctx.restore();
+        ctx.fillStyle = "Navy";
+        ctx.fillRect(0, 0, w, h);
+        ctx.save();
+        displayMsg("You won!!.", w/2.2, h/2+10, "white");
+        return 0;
+     }
 
     // call the animation loop every 1/60th of second
     requestAnimationFrame(mainLoop);
@@ -713,11 +750,11 @@ function pause(gameStates, balls) {
                             brickhit: [18616, 770]  // 18.616 start, 0.770 duration
                         },
                         onload: function() {
-                            init(); // when every music or sound is loaded    
+                            init(); // when every music or sound is loaded
                         }
                     });
                 }
-            });    
+            });
         } else {
             init();
         }
@@ -738,13 +775,16 @@ function pause(gameStates, balls) {
         bonuses.push(new Bonus());
         // play initial music
         if (audio === "on") {
-            music.play();   
+            music.play();
         }
     };
 
     var initTerrain = function(){
+        // this will just initialize the background
+        // but each update the window will be cleared,
+        // so look for (Ctrl+F) clearCanvas()
         ctx.restore();
-        if (graphics === "high") {    
+        if (graphics === "high") {
             var terrain = new Sprite(SPRITES, [0, 71], [24, 32]);
             terrainPattern = ctx.createPattern(terrain.image(),'repeat');
         }
@@ -766,7 +806,7 @@ function pause(gameStates, balls) {
         // change volume
         document.getElementById("volumen").onchange = cambiarVolumen;
         // call change volume function for the first time
-        cambiarVolumen();  
+        cambiarVolumen();
     };
 
   //our GameFramework returns a public API visible from outside its scope
