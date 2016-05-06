@@ -92,7 +92,7 @@ function spawnBall(balls, paddle) {
     var BALLDIAMETER = 6;
     var coorX = (2*paddle.x+paddle.width)/2;
     var coorY = paddle.y-BALLDIAMETER/2-1;
-    var randomSpeed = Math.floor(Math.random()*80+120);
+    var randomSpeed = Math.floor(Math.random() * (300 - 350 + 1) + 350);
     var randomAngle = Math.floor(Math.random()*2+1);
     if (randomAngle === 1)
         randomAngle = Math.PI/4;
