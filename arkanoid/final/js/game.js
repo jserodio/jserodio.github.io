@@ -713,7 +713,7 @@ function pause(gameStates, balls) {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, w, h);
             ctx.save();
-            displayMsg("Game Over.", w/2.2, h/2+10, "white");
+            displayMsg("Game Over.", w/2.35, h/2+10, "white");
             return 0;
         } else {
             displayMsg("Press space button.", w/2.6, h*3/4, "white");
