@@ -92,7 +92,7 @@ function spawnBall(balls, paddle) {
     var BALLDIAMETER = 6;
     var coorX = (2*paddle.x+paddle.width)/2;
     var coorY = paddle.y-BALLDIAMETER/2-1;
-    var randomSpeed = Math.floor(Math.random() * (300 - 350 + 1) + 350);
+    var randomSpeed = Math.floor(Math.random() * (200 - 250 + 1) + 250);
     var randomAngle = Math.floor(Math.random()*2+1);
     if (randomAngle === 1)
         randomAngle = Math.PI/4;
@@ -144,16 +144,25 @@ function testCollisionWithWalls(ball, w, h) {
     if ((ball.x + ball.radius) >= w) {      // toca borde derecho
         ball.x = w-ball.radius;             // recolocar derecha -- 150 - 3 = 147 px
         ball.angle = -ball.angle + Math.PI;
+        if (audio === "on") {
+            sound.play('wallhit');
+        }
     }
 
     if ((ball.x - ball.radius) <= 0) {      // toca borde izquierdo
         ball.x = ball.radius;               // recolocar izquierda -- 3 px
         ball.angle = -ball.angle + Math.PI;
+        if (audio === "on") {
+            sound.play('wallhit');
+        }
     }
 
     if ((ball.y - ball.radius) <= 0) {      // toca borde superior
         ball.y = ball.radius;               // recolocar arriba -- 3 px
         ball.angle = -ball.angle;
+        if (audio === "on") {
+            sound.play('wallhit');
+        }
     }
 
     if ((ball.y + ball.radius) >= h ) {     // toca borde inferior
@@ -726,6 +735,9 @@ function pause(gameStates, balls) {
         ctx.fillRect(0, 0, w, h);
         ctx.save();
         displayMsg("You won!!.", w/2.2, h/2+10, "white");
+        if (audio === "on") {
+            sound.play('win');
+        }
         return 0;
      }
 
@@ -736,18 +748,20 @@ function pause(gameStates, balls) {
     var loadAssets = function() {
         if (audio === "on") {
             music = new Howl({
-                urls: ['assets/Game_Start.ogg'],
+                urls: ['assets/Game_Start.ogg', 'assets/Game_Start.mp3'],
                 volume: 0.2,
                 onload: function() {
                     sound = new Howl({
-                        urls: ['assets/sounds.mp3'],
+                        urls: ['assets/sounds.ogg', 'assets/Game_Start.mp3'],
                         volume: 0.2,
                         buffer: true,
                         sprite: {
-                            die: [1120, 1010],      // 1.120 start, 1.010 duration
-                            laser: [12485, 290],    // 12.485 start, 0.290 duration
-                            vaushit: [16816, 770],  // 16.816 start, 0.770 duration
-                            brickhit: [18616, 770]  // 18.616 start, 0.770 duration
+                            wallhit: [24000, 41],   // 24.000 start, 0.041 duration
+                            die: [1138, 1000],
+                            laser: [12485, 290],
+                            vaushit: [16833, 800],
+                            brickhit: [18633, 800],
+                            win: [22232, 909]
                         },
                         onload: function() {
                             init(); // when every music or sound is loaded

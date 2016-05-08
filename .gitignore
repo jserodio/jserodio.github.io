@@ -1,3 +1,4 @@
 .vscode
 .vscode/.browse.VC.db
++.browse.VC.db
 /ws/node_modules
