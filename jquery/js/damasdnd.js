@@ -80,10 +80,6 @@ function drawBoard() {
       // dibujar la imagen en el canvas (x - col, y - fil)
       gDrawingContext.drawImage(image,casilla.column*64,casilla.row*64);
 
-      // conseguir la imagen pintada y hacerla draggable
-      var img = gDrawingContext.getImageData(casilla.column*64, casilla.row*64, 64, 64);
-
-
     }
   });
 
